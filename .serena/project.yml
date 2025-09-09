@@ -1,0 +1,167 @@
+# AI Dynamic Painting System - Serena MCP Project Configuration
+# AI動的絵画システム - serenaMCP プロジェクト設定
+
+name: "AI-Dynamic-Painting"
+description: "AI-powered dynamic painting display system with IoT integration"
+
+# プロジェクト固有の設定
+settings:
+  # 開発フェーズ管理
+  development_phase: 1  # Current: Phase 1 - Basic System
+  
+  # コード規約
+  code_style:
+    python:
+      style_guide: "PEP 8"
+      type_hints: required
+      docstring_format: "Google"
+    typescript:
+      strict_mode: true
+      eslint: true
+      prettier: true
+    cpp:
+      standard: "C++11"
+      platform: "Arduino/M5STACK"
+  
+  # テスト設定
+  testing:
+    framework_python: "pytest"
+    framework_js: "jest"
+    coverage_threshold: 80
+    tdd_required: true
+    hardware_test_required: true
+
+# プロジェクト構造
+structure:
+  source_directories:
+    - core/
+    - api/
+    - web/
+    - m5stack/
+    - database/
+  test_directories:
+    - tests/
+  documentation:
+    - docs/
+    - 企画書.md
+    - 詳細設計書.md
+    - 実装計画書.md
+    - CLAUDE.md
+    - PERSONA.md
+  
+# カスタムコマンド
+commands:
+  # Phase 1 コマンド
+  - name: "setup_dev_env"
+    description: "開発環境をセットアップ"
+    command: "python scripts/setup_dev.py"
+    
+  - name: "test_phase1"
+    description: "Phase 1のテストを実行"
+    command: "pytest tests/phase1/ -v"
+    
+  - name: "run_local"
+    description: "ローカル開発サーバーを起動"
+    command: "python -m uvicorn api.main:app --reload"
+    
+  # ハードウェア関連
+  - name: "test_raspberry"
+    description: "Raspberry Pi接続テスト"
+    command: "python scripts/test_raspberry.py"
+    
+  - name: "test_m5stack"
+    description: "M5STACK接続テスト"
+    command: "python scripts/test_m5stack.py"
+    
+  - name: "deploy_m5stack"
+    description: "M5STACKにコードをデプロイ"
+    command: "platformio run --target upload"
+  
+  # ビルド・デプロイ
+  - name: "build_frontend"
+    description: "フロントエンドをビルド"
+    command: "cd web && npm run build"
+    
+  - name: "deploy_phase"
+    description: "現在のフェーズをデプロイ"
+    command: "python scripts/deploy.py --phase current"
+
+# 環境変数テンプレート
+environment_template: |
+  # API Keys
+  VEO_API_KEY=your_veo_api_key_here
+  WEATHER_API_KEY=your_weather_api_key_here
+  
+  # Database
+  DATABASE_URL=sqlite:///./app.db
+  
+  # Hardware
+  RASPBERRY_PI_HOST=192.168.1.100
+  M5STACK_HOST=192.168.1.101
+  
+  # App Settings
+  DEBUG=true
+  LOG_LEVEL=INFO
+  
+  # API Settings
+  VEO_QUOTA_LIMIT=1000
+  VEO_FALLBACK_CACHE=true
+
+# インデックス設定
+indexing:
+  enabled: true
+  include:
+    - "**/*.py"
+    - "**/*.ts"
+    - "**/*.tsx"
+    - "**/*.js"
+    - "**/*.jsx"
+    - "**/*.cpp"
+    - "**/*.h"
+    - "**/*.json"
+    - "**/*.yaml"
+    - "**/*.md"
+  exclude:
+    - "**/node_modules/**"
+    - "**/__pycache__/**"
+    - "**/venv/**"
+    - "**/env/**"
+    - "**/.git/**"
+    - "**/build/**"
+    - "**/dist/**"
+    - "**/coverage/**"
+    - "**/*.log"
+
+# 言語サーバー設定オーバーライド
+language_servers:
+  python:
+    settings:
+      python_version: "3.11"
+      virtual_env: "venv"
+  typescript:
+    settings:
+      tsconfig_path: "./web/tsconfig.json"
+  cpp:
+    settings:
+      platformio_ini: "./m5stack/platformio.ini"
+
+# プロジェクト固有の警告・リマインダー
+reminders:
+  - "Phase 1完成まで次のフェーズに移行しない"
+  - "ハードウェア実機での動作確認必須"
+  - "TDD: Red → Green → Refactor サイクル厳守"
+  - "VEO APIのクォータ管理を常に意識"
+  - "24時間連続稼働の安定性を重視"
+  
+# タスク管理
+task_tracking:
+  enabled: true
+  auto_create_todos: true
+  phase1_tasks:
+    - "開発環境構築"
+    - "基本APIサーバー実装"
+    - "Web UI基本機能実装"
+    - "M5STACKプログラム作成"
+    - "Raspberry Pi設定"
+    - "統合テスト"
+    - "24時間稼働テスト"

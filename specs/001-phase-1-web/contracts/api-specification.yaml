@@ -1,0 +1,415 @@
+openapi: 3.0.3
+info:
+  title: Phase 1 手動動画管理システム API
+  description: Raspberry Pi上での動画アップロード・表示制御API
+  version: 1.0.0
+  contact:
+    name: AI Dynamic Painting System
+    
+servers:
+  - url: http://localhost:8000
+    description: Raspberry Pi Local Server
+    
+paths:
+  # Video Management Endpoints
+  /api/videos:
+    get:
+      summary: 動画一覧取得
+      description: アップロード済み動画の一覧を取得
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [active, archived, processing, error]
+          description: 動画ステータスでフィルタ
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+          description: 取得件数制限
+      responses:
+        '200':
+          description: 動画一覧
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  videos:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Video'
+                  total:
+                    type: integer
+                  page:
+                    type: integer
+                    
+    post:
+      summary: 動画アップロード
+      description: 新しい動画ファイルをアップロード
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: MP4動画ファイル（最大500MB）
+                title:
+                  type: string
+                  maxLength: 100
+                  description: 表示用タイトル
+              required:
+                - file
+      responses:
+        '201':
+          description: アップロード成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Video'
+        '400':
+          description: バリデーションエラー
+        '413':
+          description: ファイルサイズ超過
+          
+  /api/videos/{video_id}:
+    get:
+      summary: 動画詳細取得
+      parameters:
+        - name: video_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: 動画詳細
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Video'
+        '404':
+          description: 動画が見つからない
+          
+    delete:
+      summary: 動画削除
+      parameters:
+        - name: video_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: 削除成功
+        '404':
+          description: 動画が見つからない
+          
+  # Display Control Endpoints
+  /api/display/play:
+    post:
+      summary: 動画再生開始
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                video_id:
+                  type: string
+                  format: uuid
+                loop_enabled:
+                  type: boolean
+                  default: false
+                start_position:
+                  type: number
+                  minimum: 0
+                  default: 0
+              required:
+                - video_id
+      responses:
+        '200':
+          description: 再生開始成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DisplaySession'
+        '404':
+          description: 動画が見つからない
+        '409':
+          description: 既に別の動画が再生中
+          
+  /api/display/pause:
+    post:
+      summary: 再生一時停止
+      responses:
+        '200':
+          description: 一時停止成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DisplaySession'
+        '409':
+          description: 再生中の動画なし
+          
+  /api/display/resume:
+    post:
+      summary: 再生再開
+      responses:
+        '200':
+          description: 再開成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DisplaySession'
+                
+  /api/display/stop:
+    post:
+      summary: 再生停止
+      responses:
+        '200':
+          description: 停止成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DisplaySession'
+                
+  /api/display/status:
+    get:
+      summary: 表示状態取得
+      responses:
+        '200':
+          description: 現在の表示状態
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DisplaySession'
+                
+  # M5STACK Control Endpoints  
+  /api/m5stack/status:
+    get:
+      summary: M5STACK状態取得
+      description: M5STACKからの定期的なヘルスチェック
+      responses:
+        '200':
+          description: システム状態
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  system_status:
+                    $ref: '#/components/schemas/SystemStatus'
+                  current_session:
+                    $ref: '#/components/schemas/DisplaySession'
+                    nullable: true
+                    
+  /api/m5stack/control:
+    post:
+      summary: M5STACKからの制御
+      description: ボタン操作による動画制御
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                action:
+                  type: string
+                  enum: [next, previous, play_pause, stop, volume_up, volume_down]
+                device_info:
+                  type: object
+                  properties:
+                    device_id:
+                      type: string
+                    ip_address:
+                      type: string
+              required:
+                - action
+      responses:
+        '200':
+          description: 制御成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: string
+                  current_session:
+                    $ref: '#/components/schemas/DisplaySession'
+                    nullable: true
+                    
+  # System Monitoring
+  /api/system/health:
+    get:
+      summary: システムヘルスチェック
+      responses:
+        '200':
+          description: システム状態
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemStatus'
+                
+components:
+  schemas:
+    Video:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+          maxLength: 100
+        file_path:
+          type: string
+        file_size:
+          type: integer
+          maximum: 524288000
+        duration:
+          type: number
+          minimum: 0
+        format:
+          type: string
+          enum: [mp4]
+        resolution:
+          type: string
+          example: "1920x1080"
+        thumbnail_path:
+          type: string
+          nullable: true
+        upload_timestamp:
+          type: string
+          format: date-time
+        last_played:
+          type: string
+          format: date-time
+          nullable: true
+        play_count:
+          type: integer
+          minimum: 0
+        status:
+          type: string
+          enum: [active, archived, processing, error]
+      required:
+        - id
+        - title
+        - file_path
+        - file_size
+        - duration
+        - format
+        - upload_timestamp
+        - status
+        
+    DisplaySession:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        video_id:
+          type: string
+          format: uuid
+        start_time:
+          type: string
+          format: date-time
+        end_time:
+          type: string
+          format: date-time
+          nullable: true
+        session_type:
+          type: string
+          enum: [manual, scheduled, loop]
+        current_position:
+          type: number
+          minimum: 0
+        playback_status:
+          type: string
+          enum: [playing, paused, stopped, loading]
+        display_mode:
+          type: string
+          enum: [fullscreen, windowed]
+        loop_enabled:
+          type: boolean
+        created_by:
+          type: string
+          enum: [web, m5stack]
+      required:
+        - id
+        - video_id
+        - start_time
+        - session_type
+        - current_position
+        - playback_status
+        - created_by
+        
+    SystemStatus:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        timestamp:
+          type: string
+          format: date-time
+        cpu_usage:
+          type: number
+          minimum: 0
+          maximum: 100
+        memory_usage:
+          type: number
+          minimum: 0
+          maximum: 100
+        disk_usage:
+          type: number
+          minimum: 0
+          maximum: 100
+        uptime:
+          type: integer
+          minimum: 0
+        active_sessions:
+          type: integer
+          minimum: 0
+        total_videos:
+          type: integer
+          minimum: 0
+        m5stack_status:
+          type: string
+          enum: [online, offline, error]
+        display_status:
+          type: string
+          enum: [active, idle, error]
+        api_status:
+          type: string
+          enum: [healthy, degraded, error]
+      required:
+        - id
+        - timestamp
+        - uptime
+        - active_sessions
+        - total_videos
+        
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        details:
+          type: object
+          nullable: true
+      required:
+        - error
+        - message

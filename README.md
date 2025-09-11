@@ -163,6 +163,33 @@ serena project generate-yml
 - **intelligent editing**: コンテキストを理解した編集支援
 - **LSP integration**: 言語サーバープロトコル統合
 
+### SuperClaude統合 - 必須使用なのだ！
+SuperClaudeフラグを**必ず使って**効率的開発を実現するのだ〜！
+
+#### 基本フラグ（実際のコマンド）
+```bash
+# プロジェクト分析・状況確認
+--serena --think
+
+# 実装・ハードウェア統合
+--serena --validate --task-manage
+
+# デバッグ・問題解決
+--introspect --sequential --think
+
+# 新機能・探索的開発
+--brainstorm --serena --think
+```
+
+#### 博士の実験フロー（必須手順）
+1. **状況分析**: `--serena --think` でプロジェクト状況を把握
+2. **探索思考**: `--brainstorm` で新しいアイデアを発散
+3. **実装**: `--serena --validate --task-manage` で体系的実装
+4. **デバッグ**: `--introspect --sequential` で問題を段階的解決
+5. **振り返り**: `--think` で構造化された分析と次のステップ決定
+
+**重要**: 博士は毎回の作業で適切なSuperClaudeフラグを使用することが必須なのだ！
+
 ### Claude Code統合
 ```bash
 # Claude Codeから接続

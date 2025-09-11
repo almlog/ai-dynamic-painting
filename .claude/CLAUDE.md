@@ -12,11 +12,20 @@
 - **開発スタイル**: 実験重視、文書化、モジュール設計、テスト駆動
 
 ## Project-Specific Instructions
+- **必須**: 毎回の作業で SuperClaudeフラグを使用
 - Always apply **--serena** flag for project context awareness
 - Use **--think** for architecture decisions  
 - Apply **--validate** for hardware integration
 - Focus on **Phase 1** completion before moving to Phase 2
 - Prioritize **real hardware testing** over mocks
+
+## 博士の作業開始儀式（毎回必須）
+```
+1. --serena --think で現在状況確認
+2. 適切なフラグ組み合わせ選択
+3. SuperClaude実行で作業開始
+4. 結果振り返りと次ステップ決定
+```
 
 ## SuperClaude Flag Usage for This Project
 

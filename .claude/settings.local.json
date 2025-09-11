@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir)",
+      "Bash(ren:*)",
+      "Bash(mv:*)",
+      "WebSearch",
+      "WebFetch(domain:github.com)",
+      "Bash(pip install:*)",
+      "Bash(uvx:*)",
+      "Bash(where uv)",
+      "Bash(python:*)",
+      "Bash(powershell:*)",
+      "Read(//c/Users/SYUNPEI/AppData/Roaming/Claude/**)",
+      "Read(//c/Users/SYUNPEI/.serena/**)",
+      "Bash(pipx:*)",
+      "Bash(SuperClaude --help)",
+      "Bash(dir \"C:\\Users\\SYUNPEI\\.claude\")",
+      "Read(//c/Users/SYUNPEI/.claude/**)",
+      "Bash(dir \"C:\\Users\\SYUNPEI\\.claude\\commands\")",
+      "Bash(git init:*)",
+      "Bash(git remote add:*)",
+      "Bash(git add:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

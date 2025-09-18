@@ -81,6 +81,16 @@ generated_videos/
 .claude/logs/
 .claude/todos/
 
+# Archive and temporary directories
+archive/
+temp/
+tmp/
+
+# Development reports and completion files
+*_Report.md
+*_COMPLETION_*.md
+Phase*_*.md
+
 # Backup files
 *.bak
 *.backup

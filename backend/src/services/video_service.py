@@ -73,7 +73,7 @@ class VideoService:
             format=video_data.format,
             resolution=video_data.resolution,
             upload_timestamp=datetime.now(),
-            status="processing"  # Start as processing
+            status=video_data.status  # Use status from video_data
         )
         
         self._videos[video_id] = video

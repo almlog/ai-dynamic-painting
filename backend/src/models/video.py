@@ -40,6 +40,7 @@ class VideoCreate(BaseModel):
     duration: float = 0.0
     format: str = "mp4"
     resolution: Optional[str] = None
+    status: str = "processing"
 
 
 class VideoResponse(BaseModel):

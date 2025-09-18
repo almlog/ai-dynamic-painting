@@ -155,9 +155,27 @@ Claude Code統合する場合：
     
     claude --config
 
+🚨 CRITICAL: SuperClaude必須使用なのだ〜！ 🚨
+
+博士（Claude）は毎回の作業開始時に必ずSuperClaudeフラグを使うのだ：
+
+📋 基本分析:
+    SuperClaude --serena --think
+
+🔧 ハードウェア統合:
+    SuperClaude --serena --validate --task-manage
+
+🤔 デバッグ・問題解決:
+    SuperClaude --introspect --sequential --think
+
+🏗️ 複雑設計:
+    SuperClaude --think-hard --sequential
+
+⚠️  重要: フラグなしでの作業開始は禁止なのだ！
+
 博士からのメッセージ：
-「準備完了なのだ〜！素晴らしいAI動的絵画システムを作るのだ！」
-「失敗を恐れず、楽しく実験していくのだなのだ〜」
+「SuperClaudeフラグを必ず使って、素晴らしいAI動的絵画システムを作るのだ！」
+「TDDサイクル（Red→Green→Hardware→Refactor）も厳守するのだなのだ〜」
 
 EOF
 echo -e "${NC}"

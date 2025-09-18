@@ -5,6 +5,7 @@ T037: Minimal display control endpoints to pass contract tests
 import uuid
 from datetime import datetime
 from fastapi import APIRouter, HTTPException
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from src.models.display_session import DisplaySession
 from src.services.video_service import VideoService
@@ -32,9 +33,9 @@ async def play_video(request: PlayRequest):
     # Verify video exists
     video = video_service.get_video_by_id(request.video_id)
     if not video:
-        raise HTTPException(
+        return JSONResponse(
             status_code=404,
-            detail={"error": "Video not found", "message": f"Video {request.video_id} not found"}
+            content={"error": "Video not found", "message": f"Video {request.video_id} not found"}
         )
     
     # Create display session
@@ -67,7 +68,10 @@ async def play_video(request: PlayRequest):
 
 @router.post("/display/pause", response_model=dict)
 async def pause_video():
-    """Pause current video playback"""
+    """
+    Pause current video playback
+    T038 GREEN Phase: Minimal implementation to pass contract tests
+    """
     global current_session
     if not current_session:
         raise HTTPException(
@@ -104,7 +108,10 @@ async def stop_video():
         )
     
     current_session["playback_status"] = "stopped"
-    return current_session
+    # Clear session after stopping for proper state management
+    stopped_session = current_session.copy()
+    current_session = {}  # Clear the session
+    return stopped_session
 
 
 @router.get("/display/status", response_model=dict)

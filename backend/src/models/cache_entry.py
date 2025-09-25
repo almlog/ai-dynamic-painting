@@ -4,7 +4,7 @@ Stores cache data with metadata, TTL, compression, and analytics.
 """
 
 from sqlalchemy import Column, String, Float, Integer, DateTime, Text, Boolean, JSON, LargeBinary
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import declarative_base
 from datetime import datetime, timedelta
 from pydantic import BaseModel, Field
 from typing import Optional, Dict, Any, List

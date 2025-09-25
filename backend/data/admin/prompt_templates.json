@@ -1,0 +1,264 @@
+{
+  "2c3e3571-d70c-46c7-a7fd-fff099dae1bd": {
+    "id": "2c3e3571-d70c-46c7-a7fd-fff099dae1bd",
+    "name": "船橋市夜景テンプレート",
+    "template": "千葉県船橋市の{time_of_day}の風景を油絵で描いてください。\n天気: {weather}\n気温: {temperature}°C\n\n【スタイル】\n- 印象派風油絵\n- 暖かみのある色調\n- 文字無し純粋絵画",
+    "variables": [
+      "time_of_day",
+      "weather",
+      "temperature"
+    ],
+    "parameters": {
+      "model": "gemini-1.5-flash",
+      "temperature": 0.7,
+      "top_k": 40,
+      "top_p": 0.95
+    },
+    "created_at": "2025-09-20 21:24:38.690881",
+    "updated_at": "2025-09-20 21:24:38.690929"
+  },
+  "c692f755-32d6-473d-9e8e-e345c09d14dc": {
+    "id": "c692f755-32d6-473d-9e8e-e345c09d14dc",
+    "name": "船橋市夜景テンプレート",
+    "template": "千葉県船橋市の{time_of_day}の風景を油絵で描いてください。\n天気: {weather}\n気温: {temperature}°C\n\n【スタイル】\n- 印象派風油絵\n- 暖かみのある色調\n- 文字無し純粋絵画",
+    "variables": [
+      "time_of_day",
+      "weather",
+      "temperature"
+    ],
+    "parameters": {
+      "model": "gemini-1.5-flash",
+      "temperature": 0.7,
+      "top_k": 40,
+      "top_p": 0.95
+    },
+    "created_at": "2025-09-20 21:25:09.411836",
+    "updated_at": "2025-09-20 21:25:09.411883"
+  },
+  "7395c964-5113-4c2a-9476-11176b836d7e": {
+    "id": "7395c964-5113-4c2a-9476-11176b836d7e",
+    "name": "更新後テンプレート",
+    "template": "更新後の内容",
+    "variables": [],
+    "parameters": {},
+    "created_at": "2025-09-20 21:25:09.437787",
+    "updated_at": "2025-09-20 21:25:09.446337"
+  },
+  "d3c56554-b3a1-4815-a820-f59611d739fe": {
+    "id": "d3c56554-b3a1-4815-a820-f59611d739fe",
+    "name": "船橋市テスト絵画",
+    "template": "千葉県船橋市の美しい夕暮れの風景を油絵で描いてください。東京湾が見える港町の風情、ららぽーとTOKYO-BAYのランドマーク、住宅街と商業地の調和した街並み。印象派風の暖かい色調で、文字は一切含めず純粋な風景絵画として。",
+    "variables": [],
+    "parameters": {
+      "model": "imagen-2",
+      "style": "oil_painting"
+    },
+    "created_at": "2025-09-20 21:43:26.257845",
+    "updated_at": "2025-09-20 21:43:26.257895"
+  },
+  "0b09a532-4ad2-446e-9ce4-711b3e36d30f": {
+    "id": "0b09a532-4ad2-446e-9ce4-711b3e36d30f",
+    "name": "船橋市夜景テンプレート",
+    "template": "千葉県船橋市の{time_of_day}の風景を油絵で描いてください。\n天気: {weather}\n気温: {temperature}°C\n\n【スタイル】\n- 印象派風油絵\n- 暖かみのある色調\n- 文字無し純粋絵画",
+    "variables": [
+      "time_of_day",
+      "weather",
+      "temperature"
+    ],
+    "parameters": {
+      "model": "gemini-1.5-flash",
+      "temperature": 0.7,
+      "top_k": 40,
+      "top_p": 0.95
+    },
+    "created_at": "2025-09-20 22:05:21.203231",
+    "updated_at": "2025-09-20 22:05:21.203280"
+  },
+  "bb61ce7e-1bfc-419c-b8a0-6dea2eb11175": {
+    "id": "bb61ce7e-1bfc-419c-b8a0-6dea2eb11175",
+    "name": "更新後テンプレート",
+    "template": "更新後の内容",
+    "variables": [],
+    "parameters": {},
+    "created_at": "2025-09-20 22:05:21.237620",
+    "updated_at": "2025-09-20 22:05:21.249077"
+  },
+  "185347f6-0ab8-43fa-a197-01f86638927f": {
+    "id": "185347f6-0ab8-43fa-a197-01f86638927f",
+    "name": "統合テスト用テンプレート",
+    "template": "船橋市の{time_of_day}の風景",
+    "variables": [
+      "time_of_day"
+    ],
+    "parameters": {
+      "model": "gemini-1.5-flash",
+      "temperature": 0.7
+    },
+    "created_at": "2025-09-20 22:05:21.984332",
+    "updated_at": "2025-09-20 22:05:21.984364"
+  },
+  "bd43981a-71cb-45cc-9d31-e0bb18f9a0c4": {
+    "id": "bd43981a-71cb-45cc-9d31-e0bb18f9a0c4",
+    "name": "船橋市夜景テンプレート",
+    "template": "千葉県船橋市の{time_of_day}の風景を油絵で描いてください。\n天気: {weather}\n気温: {temperature}°C\n\n【スタイル】\n- 印象派風油絵\n- 暖かみのある色調\n- 文字無し純粋絵画",
+    "variables": [
+      "time_of_day",
+      "weather",
+      "temperature"
+    ],
+    "parameters": {
+      "model": "gemini-1.5-flash",
+      "temperature": 0.7,
+      "top_k": 40,
+      "top_p": 0.95
+    },
+    "created_at": "2025-09-21 23:59:39.619478",
+    "updated_at": "2025-09-21 23:59:39.619533"
+  },
+  "b0fdc321-b08d-4eb1-88f1-2fccb3cc424a": {
+    "id": "b0fdc321-b08d-4eb1-88f1-2fccb3cc424a",
+    "name": "更新後テンプレート",
+    "template": "更新後の内容",
+    "variables": [],
+    "parameters": {},
+    "created_at": "2025-09-21 23:59:39.661030",
+    "updated_at": "2025-09-21 23:59:39.673774"
+  },
+  "ad835c73-b514-4a10-8bc3-1b27923bf73c": {
+    "id": "ad835c73-b514-4a10-8bc3-1b27923bf73c",
+    "name": "統合テスト用テンプレート",
+    "template": "船橋市の{time_of_day}の風景",
+    "variables": [
+      "time_of_day"
+    ],
+    "parameters": {
+      "model": "gemini-1.5-flash",
+      "temperature": 0.7
+    },
+    "created_at": "2025-09-21 23:59:39.958589",
+    "updated_at": "2025-09-21 23:59:39.958622"
+  },
+  "aa0aadd8-bd29-42a7-9999-09f08297aab0": {
+    "id": "aa0aadd8-bd29-42a7-9999-09f08297aab0",
+    "name": "船橋市夜景テンプレート",
+    "template": "千葉県船橋市の{time_of_day}の風景を油絵で描いてください。\n天気: {weather}\n気温: {temperature}°C\n\n【スタイル】\n- 印象派風油絵\n- 暖かみのある色調\n- 文字無し純粋絵画",
+    "variables": [
+      "time_of_day",
+      "weather",
+      "temperature"
+    ],
+    "parameters": {
+      "model": "gemini-1.5-flash",
+      "temperature": 0.7,
+      "top_k": 40,
+      "top_p": 0.95
+    },
+    "created_at": "2025-09-22 00:06:37.691515",
+    "updated_at": "2025-09-22 00:06:37.691576"
+  },
+  "f8ac0c47-5be4-4fe7-b32d-9505ab09d304": {
+    "id": "f8ac0c47-5be4-4fe7-b32d-9505ab09d304",
+    "name": "更新後テンプレート",
+    "template": "更新後の内容",
+    "variables": [],
+    "parameters": {},
+    "created_at": "2025-09-22 00:06:37.739056",
+    "updated_at": "2025-09-22 00:06:37.752155"
+  },
+  "1856eff1-6e9b-43c7-997f-4c60919862a2": {
+    "id": "1856eff1-6e9b-43c7-997f-4c60919862a2",
+    "name": "統合テスト用テンプレート",
+    "template": "船橋市の{time_of_day}の風景",
+    "variables": [
+      "time_of_day"
+    ],
+    "parameters": {
+      "model": "gemini-1.5-flash",
+      "temperature": 0.7
+    },
+    "created_at": "2025-09-22 00:06:38.066009",
+    "updated_at": "2025-09-22 00:06:38.066068"
+  },
+  "856c2d05-e7d8-4ce4-b6cc-12a4771adbff": {
+    "id": "856c2d05-e7d8-4ce4-b6cc-12a4771adbff",
+    "name": "船橋市夜景テンプレート",
+    "template": "千葉県船橋市の{time_of_day}の風景を油絵で描いてください。\n天気: {weather}\n気温: {temperature}°C\n\n【スタイル】\n- 印象派風油絵\n- 暖かみのある色調\n- 文字無し純粋絵画",
+    "variables": [
+      "time_of_day",
+      "weather",
+      "temperature"
+    ],
+    "parameters": {
+      "model": "gemini-1.5-flash",
+      "temperature": 0.7,
+      "top_k": 40,
+      "top_p": 0.95
+    },
+    "created_at": "2025-09-22 00:09:24.505979",
+    "updated_at": "2025-09-22 00:09:24.506035"
+  },
+  "8f819481-c495-41ec-8d93-27820d54cab4": {
+    "id": "8f819481-c495-41ec-8d93-27820d54cab4",
+    "name": "更新後テンプレート",
+    "template": "更新後の内容",
+    "variables": [],
+    "parameters": {},
+    "created_at": "2025-09-22 00:09:24.548681",
+    "updated_at": "2025-09-22 00:09:24.563112"
+  },
+  "4cc25a90-dcea-4220-9895-9776d46df04d": {
+    "id": "4cc25a90-dcea-4220-9895-9776d46df04d",
+    "name": "統合テスト用テンプレート",
+    "template": "船橋市の{time_of_day}の風景",
+    "variables": [
+      "time_of_day"
+    ],
+    "parameters": {
+      "model": "gemini-1.5-flash",
+      "temperature": 0.7
+    },
+    "created_at": "2025-09-22 00:09:24.914054",
+    "updated_at": "2025-09-22 00:09:24.914083"
+  },
+  "65c1df86-9fb2-49db-81b6-ddb62dd9fe66": {
+    "id": "65c1df86-9fb2-49db-81b6-ddb62dd9fe66",
+    "name": "船橋市夜景テンプレート",
+    "template": "千葉県船橋市の{time_of_day}の風景を油絵で描いてください。\n天気: {weather}\n気温: {temperature}°C\n\n【スタイル】\n- 印象派風油絵\n- 暖かみのある色調\n- 文字無し純粋絵画",
+    "variables": [
+      "time_of_day",
+      "weather",
+      "temperature"
+    ],
+    "parameters": {
+      "model": "gemini-1.5-flash",
+      "temperature": 0.7,
+      "top_k": 40,
+      "top_p": 0.95
+    },
+    "created_at": "2025-09-22 12:13:26.740933",
+    "updated_at": "2025-09-22 12:13:26.740998"
+  },
+  "6c000323-a2a2-4f56-878d-79f0a024c34c": {
+    "id": "6c000323-a2a2-4f56-878d-79f0a024c34c",
+    "name": "更新後テンプレート",
+    "template": "更新後の内容",
+    "variables": [],
+    "parameters": {},
+    "created_at": "2025-09-22 12:13:26.791803",
+    "updated_at": "2025-09-22 12:13:26.812355"
+  },
+  "d7a162c2-5548-4eb3-89b5-f887667f949f": {
+    "id": "d7a162c2-5548-4eb3-89b5-f887667f949f",
+    "name": "統合テスト用テンプレート",
+    "template": "船橋市の{time_of_day}の風景",
+    "variables": [
+      "time_of_day"
+    ],
+    "parameters": {
+      "model": "gemini-1.5-flash",
+      "temperature": 0.7
+    },
+    "created_at": "2025-09-22 12:13:27.294650",
+    "updated_at": "2025-09-22 12:13:27.294678"
+  }
+}

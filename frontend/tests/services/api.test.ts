@@ -109,6 +109,15 @@ describe('🔴 T6-010 RED PHASE: API Client Advanced Testing - True RED Implemen
   // ============================================================================
 
   describe('Advanced Timeout Handling', () => {
+    beforeEach(() => {
+      // Suppress console errors for expected test errors
+      vi.spyOn(console, 'error').mockImplementation(() => {});
+    });
+
+    afterEach(() => {
+      vi.restoreAllMocks();
+    });
+
     it('should implement configurable request timeout', async () => {
       vi.useFakeTimers();
 
@@ -138,8 +147,14 @@ describe('🔴 T6-010 RED PHASE: API Client Advanced Testing - True RED Implemen
       // GREEN PHASE: apiClient has configurable timeout (500ms timeout for test)
       const timeoutPromise = apiClient.generateVideo(request, { timeout: 500 });
       
+      // Catch any unhandled rejections
+      timeoutPromise.catch(() => {});
+      
       // タイムアウトを発生させる
       await vi.advanceTimersByTimeAsync(501);
+
+      // Wait for all pending promises before checking result
+      await vi.runAllTimersAsync();
 
       // タイムアウトエラーがスローされることを検証
       await expect(timeoutPromise)
@@ -180,6 +195,9 @@ describe('🔴 T6-010 RED PHASE: API Client Advanced Testing - True RED Implemen
       // Simulate retry delays: 1s, 2s
       await vi.advanceTimersByTimeAsync(1000); // First retry after 1s
       await vi.advanceTimersByTimeAsync(2000); // Second retry after 2s  
+      
+      // Ensure all async operations complete
+      await vi.runAllTimersAsync();
 
       const result = await retryPromise;
       expect(result.task_id).toBe('task-123');
@@ -222,12 +240,22 @@ describe('🔴 T6-010 RED PHASE: API Client Advanced Testing - True RED Implemen
         signal: abortController.signal
       });
 
-      // Cancel after 1 second
+      // Catch any unhandled rejections
+      cancelableRequest.catch(() => {});
+
+      // Cancel after 1 second with proper timing
+      vi.useFakeTimers();
       setTimeout(() => abortController.abort(), 1000);
+      await vi.advanceTimersByTimeAsync(1000);
+      
+      // Wait for all async operations
+      await vi.runAllTimersAsync();
 
       await expect(cancelableRequest)
         .rejects
         .toThrow('Request was aborted');
+        
+      vi.useRealTimers();
     });
   });
 

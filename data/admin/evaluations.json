@@ -1,0 +1,194 @@
+{
+  "c9427182-88ef-4431-a574-45a49daf580f": {
+    "id": "c9427182-88ef-4431-a574-45a49daf580f",
+    "generation_id": "test-generation-001",
+    "rating": 4,
+    "tags": [
+      "高品質",
+      "船橋市らしい",
+      "夜景"
+    ],
+    "comment": "印象派風の表現が美しい",
+    "created_at": "2025-09-21 23:37:50.695473"
+  },
+  "20413660-cafa-4136-a9e3-7c8eee10637a": {
+    "id": "20413660-cafa-4136-a9e3-7c8eee10637a",
+    "generation_id": "test-generation-002",
+    "rating": 5,
+    "tags": [
+      "優秀"
+    ],
+    "comment": "完璧",
+    "created_at": "2025-09-21 23:37:50.715229"
+  },
+  "84299951-f3f1-4c61-b6b8-8443d99e3481": {
+    "id": "84299951-f3f1-4c61-b6b8-8443d99e3481",
+    "generation_id": "499490b3-f4f2-4561-bad2-27941564f004",
+    "rating": 4,
+    "tags": [
+      "良好"
+    ],
+    "comment": "統合テスト成功",
+    "created_at": "2025-09-21 23:38:02.994831"
+  },
+  "8f434f2c-ea2f-4a8a-a92a-eb32cf6fb772": {
+    "id": "8f434f2c-ea2f-4a8a-a92a-eb32cf6fb772",
+    "generation_id": "test-generation-001",
+    "rating": 4,
+    "tags": [
+      "高品質",
+      "船橋市らしい",
+      "夜景"
+    ],
+    "comment": "印象派風の表現が美しい",
+    "created_at": "2025-09-21 23:39:26.158023"
+  },
+  "0d338e7c-307b-43f1-a7c4-c46adf43a199": {
+    "id": "0d338e7c-307b-43f1-a7c4-c46adf43a199",
+    "generation_id": "test-generation-002",
+    "rating": 5,
+    "tags": [
+      "優秀"
+    ],
+    "comment": "完璧",
+    "created_at": "2025-09-21 23:39:26.174615"
+  },
+  "cae6a028-f7c9-48c3-bf7f-ab2520ce9a5a": {
+    "id": "cae6a028-f7c9-48c3-bf7f-ab2520ce9a5a",
+    "generation_id": "76e7a27e-51a3-4770-a465-7d877d449968",
+    "rating": 4,
+    "tags": [
+      "良好"
+    ],
+    "comment": "統合テスト成功",
+    "created_at": "2025-09-21 23:39:38.269030"
+  },
+  "9d59de1e-b3aa-4f4b-8ceb-80443293765f": {
+    "id": "9d59de1e-b3aa-4f4b-8ceb-80443293765f",
+    "generation_id": "test-generation-001",
+    "rating": 4,
+    "tags": [
+      "高品質",
+      "船橋市らしい",
+      "夜景"
+    ],
+    "comment": "印象派風の表現が美しい",
+    "created_at": "2025-09-21 23:47:09.930842"
+  },
+  "80bfdeed-161b-4bcd-b2af-c16c15d0794c": {
+    "id": "80bfdeed-161b-4bcd-b2af-c16c15d0794c",
+    "generation_id": "test-generation-002",
+    "rating": 5,
+    "tags": [
+      "優秀"
+    ],
+    "comment": "完璧",
+    "created_at": "2025-09-21 23:47:09.947152"
+  },
+  "7927d5aa-529b-4fa1-9443-ec6960675560": {
+    "id": "7927d5aa-529b-4fa1-9443-ec6960675560",
+    "generation_id": "0d8fcc1e-de0a-4156-907c-8c6d0490f54f",
+    "rating": 4,
+    "tags": [
+      "良好"
+    ],
+    "comment": "統合テスト成功",
+    "created_at": "2025-09-21 23:47:22.043955"
+  },
+  "b8c91af6-c057-48d0-97b8-195e493120dc": {
+    "id": "b8c91af6-c057-48d0-97b8-195e493120dc",
+    "generation_id": "test-generation-001",
+    "rating": 4,
+    "tags": [
+      "高品質",
+      "船橋市らしい",
+      "夜景"
+    ],
+    "comment": "印象派風の表現が美しい",
+    "created_at": "2025-09-21 23:50:25.241741"
+  },
+  "990c8770-99ff-4662-a291-6fc112745e5f": {
+    "id": "990c8770-99ff-4662-a291-6fc112745e5f",
+    "generation_id": "test-generation-002",
+    "rating": 5,
+    "tags": [
+      "優秀"
+    ],
+    "comment": "完璧",
+    "created_at": "2025-09-21 23:50:25.264130"
+  },
+  "eb172da2-bea9-4dc8-9f20-60567703ea2d": {
+    "id": "eb172da2-bea9-4dc8-9f20-60567703ea2d",
+    "generation_id": "eb411bc1-36ad-49f5-9350-c02dab36c0de",
+    "rating": 4,
+    "tags": [
+      "良好"
+    ],
+    "comment": "統合テスト成功",
+    "created_at": "2025-09-21 23:50:37.206375"
+  },
+  "f59158a2-a871-4f1d-84ae-88eb587509c5": {
+    "id": "f59158a2-a871-4f1d-84ae-88eb587509c5",
+    "generation_id": "test-generation-001",
+    "rating": 4,
+    "tags": [
+      "高品質",
+      "船橋市らしい",
+      "夜景"
+    ],
+    "comment": "印象派風の表現が美しい",
+    "created_at": "2025-09-21 23:54:33.609475"
+  },
+  "c0825510-df33-4cad-98fe-4175da2ff6e8": {
+    "id": "c0825510-df33-4cad-98fe-4175da2ff6e8",
+    "generation_id": "test-generation-002",
+    "rating": 5,
+    "tags": [
+      "優秀"
+    ],
+    "comment": "完璧",
+    "created_at": "2025-09-21 23:54:33.629821"
+  },
+  "5236907b-88ad-4233-9317-3097d1786f07": {
+    "id": "5236907b-88ad-4233-9317-3097d1786f07",
+    "generation_id": "c1b9a1ff-8862-41f2-be8f-19fcb2bfd316",
+    "rating": 4,
+    "tags": [
+      "良好"
+    ],
+    "comment": "統合テスト成功",
+    "created_at": "2025-09-21 23:54:45.907462"
+  },
+  "b6888097-10af-498f-8bc7-1c49c741add7": {
+    "id": "b6888097-10af-498f-8bc7-1c49c741add7",
+    "generation_id": "test-generation-001",
+    "rating": 4,
+    "tags": [
+      "高品質",
+      "船橋市らしい",
+      "夜景"
+    ],
+    "comment": "印象派風の表現が美しい",
+    "created_at": "2025-09-21 23:56:09.399227"
+  },
+  "48e28b73-a4cc-4c26-a11e-2a29d44f241f": {
+    "id": "48e28b73-a4cc-4c26-a11e-2a29d44f241f",
+    "generation_id": "test-generation-002",
+    "rating": 5,
+    "tags": [
+      "優秀"
+    ],
+    "comment": "完璧",
+    "created_at": "2025-09-21 23:56:09.431373"
+  },
+  "bef9a36f-dbea-4a85-967d-c3d19723e7cd": {
+    "id": "bef9a36f-dbea-4a85-967d-c3d19723e7cd",
+    "generation_id": "ec532f59-2836-439c-94ac-afa35fd0bfb8",
+    "rating": 4,
+    "tags": [
+      "良好"
+    ],
+    "comment": "統合テスト成功",
+    "created_at": "2025-09-21 23:56:09.574353"
+  }
+}

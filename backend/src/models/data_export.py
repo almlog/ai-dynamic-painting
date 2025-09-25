@@ -4,7 +4,7 @@ Supports multiple formats, scheduling, and security features.
 """
 
 from sqlalchemy import Column, String, Integer, DateTime, Text, Boolean, JSON, Float
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import declarative_base
 from datetime import datetime, timedelta
 from pydantic import BaseModel, Field
 from typing import Optional, Dict, Any, List, Union

@@ -1,0 +1,7 @@
+{
+  "default_model": "gemini-1.5-pro",
+  "rate_limit": 10,
+  "retention_days": 30,
+  "auto_evaluate": false,
+  "quality_threshold": 0.7
+}

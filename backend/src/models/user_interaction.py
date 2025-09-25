@@ -4,7 +4,7 @@ Used for learning user preferences from interaction patterns.
 """
 
 from sqlalchemy import Column, String, Float, Integer, DateTime, Text, Boolean
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import declarative_base
 from datetime import datetime
 from pydantic import BaseModel, Field
 from typing import Optional, Dict, Any

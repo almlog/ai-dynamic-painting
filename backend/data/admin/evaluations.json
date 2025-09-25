@@ -1,0 +1,162 @@
+{
+  "c08502ee-1e6d-446a-ae57-61cbbe9ed2d3": {
+    "id": "c08502ee-1e6d-446a-ae57-61cbbe9ed2d3",
+    "generation_id": "test-generation-001",
+    "rating": 4,
+    "tags": [
+      "高品質",
+      "船橋市らしい",
+      "夜景"
+    ],
+    "comment": "印象派風の表現が美しい",
+    "created_at": "2025-09-20 22:05:21.925138"
+  },
+  "e80f7e56-7a79-4413-a0da-259dc114e093": {
+    "id": "e80f7e56-7a79-4413-a0da-259dc114e093",
+    "generation_id": "test-generation-002",
+    "rating": 5,
+    "tags": [
+      "優秀"
+    ],
+    "comment": "完璧",
+    "created_at": "2025-09-20 22:05:21.935655"
+  },
+  "02de2f78-5fdc-419e-94ce-0a0af1762a7a": {
+    "id": "02de2f78-5fdc-419e-94ce-0a0af1762a7a",
+    "generation_id": "865e4921-7364-4982-af0f-ae40666e23ae",
+    "rating": 4,
+    "tags": [
+      "良好"
+    ],
+    "comment": "統合テスト成功",
+    "created_at": "2025-09-20 22:05:31.023883"
+  },
+  "54909140-83a0-4d08-89b6-007d0f6f9ad6": {
+    "id": "54909140-83a0-4d08-89b6-007d0f6f9ad6",
+    "generation_id": "test-generation-001",
+    "rating": 4,
+    "tags": [
+      "高品質",
+      "船橋市らしい",
+      "夜景"
+    ],
+    "comment": "印象派風の表現が美しい",
+    "created_at": "2025-09-21 23:59:39.853963"
+  },
+  "bc3dbdbb-7358-4f36-8993-26eb2fd57868": {
+    "id": "bc3dbdbb-7358-4f36-8993-26eb2fd57868",
+    "generation_id": "test-generation-002",
+    "rating": 5,
+    "tags": [
+      "優秀"
+    ],
+    "comment": "完璧",
+    "created_at": "2025-09-21 23:59:39.873792"
+  },
+  "57cc6da7-3098-4c82-a500-f212c429fa71": {
+    "id": "57cc6da7-3098-4c82-a500-f212c429fa71",
+    "generation_id": "47132ef2-e621-4035-a540-d9f283b5acdf",
+    "rating": 4,
+    "tags": [
+      "良好"
+    ],
+    "comment": "統合テスト成功",
+    "created_at": "2025-09-21 23:59:39.997409"
+  },
+  "564f90a8-8775-41fa-9eae-e00808815174": {
+    "id": "564f90a8-8775-41fa-9eae-e00808815174",
+    "generation_id": "test-generation-001",
+    "rating": 4,
+    "tags": [
+      "高品質",
+      "船橋市らしい",
+      "夜景"
+    ],
+    "comment": "印象派風の表現が美しい",
+    "created_at": "2025-09-22 00:06:37.958230"
+  },
+  "9fb0457e-9c2f-4d2f-b41a-749c326e6f8c": {
+    "id": "9fb0457e-9c2f-4d2f-b41a-749c326e6f8c",
+    "generation_id": "test-generation-002",
+    "rating": 5,
+    "tags": [
+      "優秀"
+    ],
+    "comment": "完璧",
+    "created_at": "2025-09-22 00:06:37.979399"
+  },
+  "b4d021d1-dd66-4cf8-949d-3ada360934c5": {
+    "id": "b4d021d1-dd66-4cf8-949d-3ada360934c5",
+    "generation_id": "0e7b0821-af09-4a15-8384-35698ee06b05",
+    "rating": 4,
+    "tags": [
+      "良好"
+    ],
+    "comment": "統合テスト成功",
+    "created_at": "2025-09-22 00:06:38.109651"
+  },
+  "8644c205-dd10-4b8c-aaeb-912a624401bc": {
+    "id": "8644c205-dd10-4b8c-aaeb-912a624401bc",
+    "generation_id": "test-generation-001",
+    "rating": 4,
+    "tags": [
+      "高品質",
+      "船橋市らしい",
+      "夜景"
+    ],
+    "comment": "印象派風の表現が美しい",
+    "created_at": "2025-09-22 00:09:24.806088"
+  },
+  "e24573f7-2a3c-49f1-916a-255012068e1e": {
+    "id": "e24573f7-2a3c-49f1-916a-255012068e1e",
+    "generation_id": "test-generation-002",
+    "rating": 5,
+    "tags": [
+      "優秀"
+    ],
+    "comment": "完璧",
+    "created_at": "2025-09-22 00:09:24.828626"
+  },
+  "e946da01-48bc-424f-b6a3-9ff3df650a43": {
+    "id": "e946da01-48bc-424f-b6a3-9ff3df650a43",
+    "generation_id": "c5e864a4-2e93-4de3-9626-8662a5b42d89",
+    "rating": 4,
+    "tags": [
+      "良好"
+    ],
+    "comment": "統合テスト成功",
+    "created_at": "2025-09-22 00:09:24.949576"
+  },
+  "6512ee77-7f25-400c-8ce5-72d40287aa19": {
+    "id": "6512ee77-7f25-400c-8ce5-72d40287aa19",
+    "generation_id": "test-generation-001",
+    "rating": 4,
+    "tags": [
+      "高品質",
+      "船橋市らしい",
+      "夜景"
+    ],
+    "comment": "印象派風の表現が美しい",
+    "created_at": "2025-09-22 12:13:27.156832"
+  },
+  "9ab0ba08-e543-4705-8cd9-3628f3b6c581": {
+    "id": "9ab0ba08-e543-4705-8cd9-3628f3b6c581",
+    "generation_id": "test-generation-002",
+    "rating": 5,
+    "tags": [
+      "優秀"
+    ],
+    "comment": "完璧",
+    "created_at": "2025-09-22 12:13:27.185351"
+  },
+  "4725f01a-ac34-4e20-aeac-55022576a780": {
+    "id": "4725f01a-ac34-4e20-aeac-55022576a780",
+    "generation_id": "74af56f2-f5a0-41dd-b87c-6249b9928ca7",
+    "rating": 4,
+    "tags": [
+      "良好"
+    ],
+    "comment": "統合テスト成功",
+    "created_at": "2025-09-22 12:13:27.351071"
+  }
+}

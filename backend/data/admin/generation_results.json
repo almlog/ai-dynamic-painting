@@ -1,0 +1,23 @@
+{
+  "6bc29910-dd19-4d37-9c6c-b36e329a2aea": {
+    "id": "6bc29910-dd19-4d37-9c6c-b36e329a2aea",
+    "generation_id": "6bc29910-dd19-4d37-9c6c-b36e329a2aea",
+    "request": {
+      "prompt_template_id": "d3c56554-b3a1-4815-a820-f59611d739fe",
+      "model": "imagen-2",
+      "temperature": 0.7,
+      "top_k": 40,
+      "top_p": 0.95,
+      "max_tokens": 2048,
+      "variables": {}
+    },
+    "status": "failed",
+    "ai_instructions": null,
+    "image_path": null,
+    "metadata": {},
+    "quality_score": null,
+    "error_message": "Image generation failed. Check service logs.",
+    "created_at": "2025-09-20 21:43:39.849338",
+    "completed_at": "2025-09-20 21:43:48.889062"
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "12a08a80-56ce-440c-99eb-9709fb14054a": {
+    "id": "12a08a80-56ce-440c-99eb-9709fb14054a",
+    "generation_id": "12a08a80-56ce-440c-99eb-9709fb14054a",
+    "request": {
+      "prompt_template_id": "e423922a-603c-442d-8227-6fd2fdb32e99",
+      "model": "imagegeneration@006",
+      "temperature": 0.8,
+      "top_k": 40,
+      "top_p": 0.95,
+      "max_tokens": 2048,
+      "variables": {
+        "subject": "robot cat",
+        "artist": "van Gogh"
+      }
+    },
+    "status": "completed",
+    "ai_instructions": null,
+    "image_path": "backend/generated_content/images/admin_generated_12a08a80_20250920_214536.png",
+    "metadata": {},
+    "quality_score": null,
+    "error_message": null,
+    "created_at": "2025-09-20 21:45:36.308350",
+    "completed_at": "2025-09-20 21:45:36.309504"
+  },
+  "2d829979-cb60-4647-9060-ab3bb6e528b1": {
+    "id": "2d829979-cb60-4647-9060-ab3bb6e528b1",
+    "generation_id": "2d829979-cb60-4647-9060-ab3bb6e528b1",
+    "request": {
+      "prompt_template_id": "451cd2c5-f58d-4b4c-8e7e-a90e57fc62f0",
+      "model": "imagegeneration@006",
+      "temperature": 0.8,
+      "top_k": 40,
+      "top_p": 0.95,
+      "max_tokens": 2048,
+      "variables": {
+        "subject": "robot cat",
+        "artist": "van Gogh"
+      }
+    },
+    "status": "completed",
+    "ai_instructions": null,
+    "image_path": "generated_content/images/admin_generated_2d829979_20250920_214659.png",
+    "metadata": {},
+    "quality_score": null,
+    "error_message": null,
+    "created_at": "2025-09-20 21:46:59.219809",
+    "completed_at": "2025-09-20 21:46:59.221446"
+  },
+  "3513b821-c4c4-47ae-814d-ff4d754a76ad": {
+    "id": "3513b821-c4c4-47ae-814d-ff4d754a76ad",
+    "generation_id": "3513b821-c4c4-47ae-814d-ff4d754a76ad",
+    "request": {
+      "prompt_template_id": "5708dabd-206e-45eb-9152-fa7c92176a49",
+      "model": "imagegeneration@006",
+      "temperature": 0.8,
+      "top_k": 40,
+      "top_p": 0.95,
+      "max_tokens": 2048,
+      "variables": {
+        "subject": "robot cat",
+        "artist": "van Gogh"
+      }
+    },
+    "status": "completed",
+    "ai_instructions": null,
+    "image_path": "/home/aipainting/ai-dynamic-painting/backend/generated_content/images/admin_generated_3513b821_20250920_215005.png",
+    "metadata": {},
+    "quality_score": null,
+    "error_message": null,
+    "created_at": "2025-09-20 21:50:05.338990",
+    "completed_at": "2025-09-20 21:50:05.341988"
+  }
+}

@@ -10,9 +10,9 @@ import json
 
 # Import AI services
 from src.ai.services.veo_client import VEOGenerationService, VEOValidationError, VEOQuotaExceededError, VEOTimeoutError
-from src.ai.services.prompt_generation_service import PromptGenerationService, ContextData
+from src.ai.services.prompt_generation_service import PromptGenerationService
 from src.ai.services.context_aware_service import ContextAwareService
-from src.ai.services.scheduling_service import SchedulingService, TaskPriority, ScheduledTask
+from src.ai.services.scheduling_service import SchedulingService, Priority
 from src.ai.services.quality_assurance_service import QualityAssuranceService
 from src.ai.services.monitoring_service import MonitoringService
 
@@ -164,10 +164,10 @@ async def generate_video(
         
         # Map priority
         priority_map = {
-            "low": TaskPriority.LOW,
-            "normal": TaskPriority.NORMAL,
-            "high": TaskPriority.HIGH,
-            "urgent": TaskPriority.URGENT
+            "low": Priority.LOW,
+            "normal": Priority.NORMAL,
+            "high": Priority.HIGH,
+            "urgent": Priority.URGENT
         }
         
         # Schedule generation task
@@ -309,10 +309,10 @@ async def schedule_generation(
         
         # Map priority
         priority_map = {
-            "low": TaskPriority.LOW,
-            "normal": TaskPriority.NORMAL,
-            "high": TaskPriority.HIGH,
-            "urgent": TaskPriority.URGENT
+            "low": Priority.LOW,
+            "normal": Priority.NORMAL,
+            "high": Priority.HIGH,
+            "urgent": Priority.URGENT
         }
         
         generation_params = {
@@ -782,10 +782,10 @@ async def create_scheduling_rule(
         
         # Map priority
         priority_map = {
-            "low": scheduling_svc.TaskPriority.LOW,
-            "normal": scheduling_svc.TaskPriority.NORMAL,
-            "high": scheduling_svc.TaskPriority.HIGH,
-            "urgent": scheduling_svc.TaskPriority.URGENT
+            "low": scheduling_svc.Priority.LOW,
+            "normal": scheduling_svc.Priority.NORMAL,
+            "high": scheduling_svc.Priority.HIGH,
+            "urgent": scheduling_svc.Priority.URGENT
         }
         
         # Create rule based on type
@@ -1894,21 +1894,24 @@ async def initialize_ai_services():
         monitoring_service = MonitoringService()
         
         # Set service dependencies
-        scheduling_service.set_services(
-            veo_service=veo_service,
-            prompt_service=prompt_service,
-            context_service=context_service
-        )
+        # Note: These services don't have set_services methods yet
+        # This will need to be implemented when services require cross-dependencies
+        # scheduling_service.set_services(
+        #     veo_service=veo_service,
+        #     prompt_service=prompt_service,
+        #     context_service=context_service
+        # )
         
-        monitoring_service.set_services(
-            veo_service=veo_service,
-            scheduling_service=scheduling_service,
-            quality_service=quality_service
-        )
+        # monitoring_service.set_services(
+        #     veo_service=veo_service,
+        #     scheduling_service=scheduling_service,
+        #     quality_service=quality_service
+        # )
         
         # Start services
-        scheduling_service.start()
-        await monitoring_service.start_monitoring()
+        # Note: Services don't have start methods yet, will be implemented later
+        # scheduling_service.start()
+        # await monitoring_service.start_monitoring()
         
         logger.info("AI services initialized successfully")
         

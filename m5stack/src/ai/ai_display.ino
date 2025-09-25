@@ -383,7 +383,9 @@ void displayStatusPage() {
             M5.Lcd.println("ERROR");
         } else {
             M5.Lcd.setTextColor(WHITE, BLACK);
-            M5.Lcd.println(genStatus.status.toUpperCase());
+            String upperStatus = genStatus.status;
+            upperStatus.toUpperCase();
+            M5.Lcd.println(upperStatus);
         }
         yPos += 20;
     }

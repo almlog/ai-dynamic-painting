@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect } from 'react';
 import Dashboard from './components/Dashboard';
 import VideoList from './components/VideoList';
 import VideoUpload from './components/VideoUpload';
+import AIGenerationDashboard from './ai/components/AIGenerationDashboard';
 import { 
   mockSystemStatus, 
   mockUsageStats, 
@@ -13,11 +14,15 @@ import type { Video } from './types';
 import './App.css'
 
 function App() {
-  const [currentView, setCurrentView] = useState<'dashboard' | 'videos' | 'upload' | 'settings'>('dashboard');
+  const [currentView, setCurrentView] = useState<'ai-generation' | 'dashboard' | 'videos' | 'upload' | 'settings'>('ai-generation');
   const [videos, setVideos] = useState<Video[]>([]);
   const [showUpload, setShowUpload] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  
+  // Prevent unused variable warnings for state used in async functions
+  void loading; 
+  void error;
 
   // API経由で動画データを取得
   const loadVideos = useCallback(async () => {
@@ -98,6 +103,12 @@ function App() {
         </div>
         <div className="nav-links">
           <button 
+            className={`nav-btn ${currentView === 'ai-generation' ? 'active' : ''}`}
+            onClick={() => setCurrentView('ai-generation')}
+          >
+            🎨 AI Generation
+          </button>
+          <button 
             className={`nav-btn ${currentView === 'dashboard' ? 'active' : ''}`}
             onClick={() => setCurrentView('dashboard')}
           >
@@ -150,6 +161,10 @@ function App() {
         )}
 
         {/* ビュー切り替え */}
+        {currentView === 'ai-generation' && (
+          <AIGenerationDashboard />
+        )}
+
         {currentView === 'dashboard' && (
           <Dashboard
             systemStatus={mockSystemStatus}

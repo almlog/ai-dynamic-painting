@@ -42,18 +42,18 @@
 ## Phase 3.2: 実動作確認テスト
 
 ### 基本API機能テスト
-- [ ] T313 VEO API simple video generation test (1 video)
-- [ ] T314 Gemini API prompt generation test  
-- [ ] T315 Weather API current conditions fetch test
-- [ ] T316 API cost tracking and reporting test
-- [ ] T317 API error recovery and fallback test
+- [ ] T313 VEO API simple video generation test (1 video) - ⚠️ Phase 4に延期
+- [x] T314 Gemini API prompt generation test ✅ 2025-09-20
+- [x] T315 Weather API current conditions fetch test ✅ 2025-09-20
+- [ ] T316 API cost tracking and reporting test - ⚠️ Phase 4に延期
+- [x] T317 API error recovery and fallback test ✅ 2025-09-20
 
 ### AI統合機能テスト  
-- [ ] T318 [P] Weather-based prompt generation integration test
-- [ ] T319 [P] VEO API video generation with custom prompts
-- [ ] T320 [P] Quality assessment of generated content
-- [ ] T321 [P] User preference learning simulation test
-- [ ] T322 [P] Scheduling system with API integration
+- [x] T318 [P] Weather-based prompt generation integration test ✅ 2025-09-20
+- [ ] T319 [P] VEO API video generation with custom prompts - ⚠️ Phase 4で高品質化
+- [x] T320 [P] Quality assessment of generated content ✅ 2025-09-20 (基本品質確認)
+- [ ] T321 [P] User preference learning simulation test - Phase 4に延期
+- [ ] T322 [P] Scheduling system with API integration - Phase 4に延期
 
 ## Phase 3.3: エンドツーエンド統合確認
 

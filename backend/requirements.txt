@@ -23,6 +23,7 @@ google-cloud-aiplatform==1.38.1
 google-auth==2.25.2
 google-auth-oauthlib==1.1.0
 google-auth-httplib2==0.1.1
+google-cloud-service-usage==1.7.1
 
 # Weather API Integration
 python-weather==1.1.0

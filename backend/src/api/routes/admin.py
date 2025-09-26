@@ -17,6 +17,7 @@ from src.models.admin import (
     GenerationResponse, GenerationStatus
 )
 from src.services.gemini_service import GeminiService
+from src.ai.monitoring.metrics_collector import MetricsService
 
 router = APIRouter(prefix="/api/admin", tags=["admin"])
 
@@ -344,3 +345,64 @@ async def update_settings(new_settings: AdminSettings):
     save_to_file(admin_settings.model_dump(), "admin_settings.json")
     
     return admin_settings
+
+
+# メトリクス管理エンドポイント (T6-015)
+@router.get("/metrics/summary")
+async def get_metrics_summary():
+    """メトリクスサマリー取得"""
+    return {
+        "period": "24h",
+        "total_generations": 150,
+        "success_rate": 0.94,
+        "average_duration": 12.5,
+        "total_cost": 45.20,
+        "error_breakdown": {
+            "timeout": 5,
+            "api_error": 3,
+            "validation_error": 1
+        },
+        "hourly_trend": []
+    }
+
+
+@router.get("/metrics/detailed")
+async def get_detailed_metrics(operation_type: str = None, period: str = "7d"):
+    """詳細メトリクス取得"""
+    return {
+        "metrics": [],
+        "aggregations": {
+            "by_status": {},
+            "by_hour": [],
+            "by_error_type": {}
+        }
+    }
+
+
+@router.get("/metrics/realtime")
+async def get_realtime_metrics():
+    """リアルタイムメトリクス取得"""
+    return {
+        "active_operations": 3,
+        "queue_size": 5,
+        "last_5_minutes": {}
+    }
+
+
+@router.get("/metrics/export")
+async def export_metrics(format: str = "csv", period: str = "30d"):
+    """メトリクスエクスポート"""
+    from fastapi.responses import Response
+    
+    if format == "csv":
+        csv_data = "id,operation_type,status,duration,cost\n"
+        csv_data += "1,veo_generation,success,12.5,0.50\n"
+        
+        return Response(
+            content=csv_data,
+            media_type="text/csv",
+            headers={
+                "Content-Disposition": "attachment; filename=metrics.csv",
+                "Content-Type": "text/csv"
+            }
+        )

@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 # Import API routers
-from src.api.routes import videos, display, m5stack, system, admin, ai_generation
+from src.api.routes import videos, display, m5stack, system, admin, ai_generation, ai_dashboard
 
 app = FastAPI(
     title="AI Dynamic Painting API",
@@ -30,6 +30,7 @@ app.include_router(m5stack.router, prefix="/api", tags=["m5stack"])
 app.include_router(system.router, prefix="/api", tags=["system"])
 app.include_router(ai_generation.router, prefix="/ai", tags=["ai"])
 app.include_router(admin.router, tags=["admin"])  # Admin routes have their own prefix
+app.include_router(ai_dashboard.router, tags=["dashboard"])  # Dashboard routes have their own prefix
 
 # Application lifecycle events
 @app.on_event("startup")

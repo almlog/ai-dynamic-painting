@@ -32,7 +32,7 @@ class TestEnhancedVEOClient:
         mock_config.location = 'us-central1'
         mock_config.credentials_path = '/path/to/credentials.json'
         
-        client = EnhancedVEOClient(config=mock_config, timeout=300)
+        client = EnhancedVEOClient(config=mock_config, timeout=300, model=MagicMock())
         
         assert client.project_id == 'test-project-id'
         assert client.location == 'us-central1'
@@ -51,7 +51,7 @@ class TestEnhancedVEOClient:
         failing_config = FailingConfigMock()
         
         with pytest.raises(VEOConfigurationError) as exc_info:
-            EnhancedVEOClient(config=failing_config)
+            EnhancedVEOClient(config=failing_config, model=MagicMock())
         
         assert "Configuration error" in str(exc_info.value)
 
@@ -59,7 +59,7 @@ class TestEnhancedVEOClient:
     async def test_generate_video_success_response_parsing(self):
         """🟢 GREEN: 動画生成メソッドの成功レスポンス正常パーステスト"""
         mock_config = MagicMock()
-        client = EnhancedVEOClient(config=mock_config)
+        client = EnhancedVEOClient(config=mock_config, model=MagicMock())
         
         # Mock successful API response
         mock_response = {
@@ -96,7 +96,7 @@ class TestEnhancedVEOClient:
     async def test_api_503_error_retry_logic(self):
         """🟢 GREEN: API 503エラー時のリトライロジック検証テスト"""
         mock_config = MagicMock()
-        client = EnhancedVEOClient(config=mock_config, max_retries=3, retry_delay=0.1)
+        client = EnhancedVEOClient(config=mock_config, max_retries=3, retry_delay=0.1, model=MagicMock())
         
         # Mock API responses: 503 -> 503 -> 200 (success on 3rd try)
         mock_responses = [
@@ -125,7 +125,7 @@ class TestEnhancedVEOClient:
     async def test_api_503_error_max_retries_exceeded(self):
         """🟢 GREEN: 最大リトライ回数超過時の例外発生テスト"""
         mock_config = MagicMock()
-        client = EnhancedVEOClient(config=mock_config, max_retries=2, retry_delay=0.1)
+        client = EnhancedVEOClient(config=mock_config, max_retries=2, retry_delay=0.1, model=MagicMock())
         
         # All attempts fail with 503
         with patch.object(client, '_call_veo_api', side_effect=Exception("503 Service Temporarily Unavailable")):
@@ -140,7 +140,7 @@ class TestEnhancedVEOClient:
     async def test_successful_api_call_logging(self, mock_log_error, mock_log_info):
         """🟢 GREEN: 成功時のログ出力確認テスト"""
         mock_config = MagicMock()
-        client = EnhancedVEOClient(config=mock_config)
+        client = EnhancedVEOClient(config=mock_config, model=MagicMock())
         
         mock_response = {
             "status": "completed",
@@ -166,7 +166,7 @@ class TestEnhancedVEOClient:
     async def test_failed_api_call_logging(self, mock_log_error):
         """🟢 GREEN: 失敗時のログ出力確認テスト"""
         mock_config = MagicMock()
-        client = EnhancedVEOClient(config=mock_config)
+        client = EnhancedVEOClient(config=mock_config, model=MagicMock())
         
         error_message = "VEO API authentication failed"
         
@@ -184,7 +184,7 @@ class TestEnhancedVEOClient:
         mock_credentials = MagicMock()
         mock_config.get_google_credentials.return_value = mock_credentials
         
-        client = EnhancedVEOClient(config=mock_config)
+        client = EnhancedVEOClient(config=mock_config, model=MagicMock())
         credentials = client.get_credentials()
         
         assert credentials is not None
@@ -195,7 +195,7 @@ class TestEnhancedVEOClient:
     async def test_quota_exceeded_error_handling(self):
         """🟢 GREEN: クォータ超過エラーの適切な処理テスト"""
         mock_config = MagicMock()
-        client = EnhancedVEOClient(config=mock_config)
+        client = EnhancedVEOClient(config=mock_config, model=MagicMock())
         
         with patch.object(client, '_call_veo_api', side_effect=VEOQuotaExceededError("Daily quota exceeded")):
             with pytest.raises(VEOQuotaExceededError) as exc_info:
@@ -207,7 +207,7 @@ class TestEnhancedVEOClient:
     async def test_timeout_error_handling(self):
         """🟢 GREEN: タイムアウトエラーの適切な処理テスト"""
         mock_config = MagicMock()
-        client = EnhancedVEOClient(config=mock_config, timeout=1)  # Very short timeout
+        client = EnhancedVEOClient(config=mock_config, timeout=1, model=MagicMock())  # Very short timeout
         
         # 非同期関数を定義してside_effectに設定
         async def slow_api_call(*args, **kwargs):
@@ -232,7 +232,7 @@ class TestEnhancedVEOClient:
     def test_validation_error_empty_prompt(self):
         """🟢 GREEN: 空プロンプト時のバリデーションエラーテスト"""
         mock_config = MagicMock()
-        client = EnhancedVEOClient(config=mock_config)
+        client = EnhancedVEOClient(config=mock_config, model=MagicMock())
         
         with pytest.raises(VEOValidationError) as exc_info:
             asyncio.run(client.generate_video(prompt=""))
@@ -243,7 +243,7 @@ class TestEnhancedVEOClient:
     async def test_image_to_video_generation_support(self):
         """🟢 GREEN: 画像から動画生成機能のサポートテスト"""
         mock_config = MagicMock()
-        client = EnhancedVEOClient(config=mock_config)
+        client = EnhancedVEOClient(config=mock_config, model=MagicMock())
         
         mock_image_bytes = b"fake_image_data"
         mock_response = {

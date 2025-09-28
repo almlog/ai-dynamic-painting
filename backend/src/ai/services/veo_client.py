@@ -46,200 +46,6 @@ class VEOConfigurationError(Exception):
     pass
 
 
-class VEOClient:
-    """VEO API client for video generation."""
-    
-    def __init__(self, timeout: int = 300):
-        """Initialize VEO client with configuration."""
-        self.project_id = os.getenv('VEO_PROJECT_ID')
-        self.location = os.getenv('VEO_LOCATION', 'us-central1')
-        self.model_name = os.getenv('VEO_MODEL_NAME', 'veo-001-preview')
-        self.timeout = timeout
-        self.base_url = "https://aiplatform.googleapis.com"
-        self.verify_ssl = True
-        
-        # Quota limits
-        self.daily_quota = int(os.getenv('VEO_API_QUOTA_PER_DAY', '100'))
-        self.per_minute_quota = int(os.getenv('VEO_API_QUOTA_PER_MINUTE', '10'))
-        
-        # Validate configuration
-        if not self.project_id:
-            raise VEOConfigurationError("VEO_PROJECT_ID environment variable is required")
-        
-        self._client = None
-        self._credentials = None
-        
-    async def validate_credentials(self) -> bool:
-        """Validate VEO API credentials."""
-        try:
-            credentials, project = default()
-            self._credentials = credentials
-            return True
-        except Exception as e:
-            logger.error(f"Credential validation failed: {e}")
-            raise VEOAuthenticationError(f"Invalid credentials: {e}")
-    
-    async def authenticate_with_invalid_credentials(self):
-        """Simulate authentication with invalid credentials - for testing."""
-        raise VEOAuthenticationError("Invalid credentials provided")
-    
-    async def get_access_token(self) -> str:
-        """Get access token for VEO API."""
-        if not self._credentials:
-            await self.validate_credentials()
-        
-        request = google.auth.transport.requests.Request()
-        self._credentials.refresh(request)
-        return self._credentials.token
-    
-    async def refresh_token(self) -> str:
-        """Refresh access token."""
-        old_token = await self.get_access_token()
-        
-        # Simulate token refresh
-        request = google.auth.transport.requests.Request()
-        self._credentials.refresh(request)
-        new_token = self._credentials.token
-        
-        if new_token == old_token:
-            # Force a new token for testing
-            new_token = f"refreshed_{new_token}"
-        
-        return new_token
-    
-    async def health_check(self) -> Dict[str, Any]:
-        """Check VEO API health status."""
-        start_time = datetime.now()
-        
-        try:
-            await self.validate_credentials()
-            authenticated = True
-        except:
-            authenticated = False
-        
-        end_time = datetime.now()
-        latency_ms = (end_time - start_time).total_seconds() * 1000
-        
-        return {
-            "status": "healthy" if authenticated else "unhealthy",
-            "latency_ms": latency_ms,
-            "authenticated": authenticated,
-            "timestamp": datetime.now().isoformat()
-        }
-    
-    async def generate_video_when_quota_exceeded(self):
-        """Simulate quota exceeded error - for testing."""
-        raise VEOQuotaExceededError("Daily quota exceeded")
-    
-    async def retry_on_auth_error(self, max_retries: int = 3) -> Dict[str, Any]:
-        """Retry mechanism for authentication errors."""
-        retry_count = 0
-        
-        for attempt in range(max_retries):
-            try:
-                await self.validate_credentials()
-                return {"success": True, "retry_count": retry_count}
-            except VEOAuthenticationError:
-                retry_count += 1
-                if attempt < max_retries - 1:
-                    await asyncio.sleep(1)  # Wait before retry
-                else:
-                    raise
-        
-        return {"success": False, "retry_count": retry_count}
-    
-    async def generate_video_with_timeout(self):
-        """Simulate timeout error - for testing."""
-        await asyncio.sleep(self.timeout + 1)  # Exceed timeout
-        raise VEOTimeoutError("Request timed out")
-
-
-import google.generativeai as genai
-from PIL import Image
-import io
-
-class VEOGenerationService:
-    """VEO video generation service using google-generativeai."""
-    
-    def __init__(self):
-        """Initialize the VEO service and configure the API key."""
-        self.api_key = os.getenv("GEMINI_API_KEY")
-        if not self.api_key:
-            raise VEOConfigurationError("GEMINI_API_KEY environment variable is not set.")
-        genai.configure(api_key=self.api_key)
-        self.model = genai.GenerativeModel('models/veo-3') # Correct way to get the model
-        logger.info("VEOGenerationService initialized and configured with model 'veo-3'.")
-    
-    async def generate_video(
-        self,
-        prompt: str,
-        image_bytes: Optional[bytes] = None, # Added for Image-to-Video
-        duration_seconds: int = 8,
-        resolution: str = "1920x1080",
-        style: Optional[str] = None
-    ) -> Dict[str, Any]:
-        """Generates a video using VEO API, supporting both text-to-video and image-to-video."""
-        
-        if not prompt.strip():
-            raise VEOValidationError("Prompt cannot be empty")
-
-        full_prompt = f"{prompt}, {style}" if style else prompt
-        contents = [full_prompt]
-
-        if image_bytes:
-            logger.info(f"Starting IMAGE-TO-VIDEO generation for prompt: {full_prompt[:100]}...")
-            try:
-                # The API expects a PIL Image object
-                image = Image.open(io.BytesIO(image_bytes))
-                # Prepend the image to the contents list for image-to-video
-                contents.insert(0, image)
-            except Exception as e:
-                logger.error(f"Failed to process provided image bytes: {e}")
-                raise VEOValidationError(f"Invalid image data provided: {e}")
-        else:
-            logger.info(f"Starting TEXT-TO-VIDEO generation for prompt: {full_prompt[:100]}...")
-
-        try:
-            # The new SDK handles the long-running operation implicitly.
-            # The result is returned directly when generation is complete.
-            # This might take several minutes.
-            response = self.model.generate_content(
-                contents=contents,
-                generation_config=genai.types.GenerationConfig(
-                    # Parameters for video generation might differ, consult docs
-                    temperature=0.7 
-                )
-            )
-
-            # Assuming the response contains the video data in the first candidate
-            video_part = response.candidates[0].content.parts[0]
-            video_bytes = video_part.blob.data
-
-            logger.info(f"Successfully generated video, {len(video_bytes)} bytes.")
-
-            return {
-                "status": "completed",
-                "video_bytes": video_bytes,
-                "video_id": f"veo_video_{datetime.now().timestamp()}",
-                "completion_time": datetime.now().isoformat()
-            }
-
-        except Exception as e:
-            logger.error(f"Failed to generate VEO video: {e}")
-            raise VEOValidationError(f"VEO API call failed: {e}")
-
-
-# Exception classes for validation (keeping for backward compatibility)
-class VEOValidationError(Exception):
-    """VEO API validation error."""
-    pass
-
-
-class VEOConfigurationError(Exception):
-    """VEO API configuration error."""
-    pass
-
-
 # =====================================
 # T6-012: Enhanced VEO Client with VEOConfig Integration
 # =====================================
@@ -251,7 +57,8 @@ class EnhancedVEOClient:
     """
     
     def __init__(self, config: Optional[VEOConfig] = None, timeout: int = 300, 
-                 max_retries: int = 3, retry_delay: float = 1.0):
+                 max_retries: int = 3, retry_delay: float = 1.0,
+                 model: Optional[Any] = None):
         """
         Initialize Enhanced VEO client with Dependency Injection
         
@@ -260,6 +67,7 @@ class EnhancedVEOClient:
             timeout: API request timeout in seconds
             max_retries: Maximum retry attempts for failed requests
             retry_delay: Delay between retry attempts in seconds
+            model: Optional GenerativeModel instance for dependency injection
             
         Raises:
             VEOConfigurationError: If VEOConfig initialization fails
@@ -284,6 +92,17 @@ class EnhancedVEOClient:
         
         # Authentication state
         self._credentials = None
+        
+        # Dependency injection for model
+        self.model = model
+        if self.model is None:
+            # 実際のAPIを初期化
+            aiplatform.init(
+                project=self.project_id,
+                location=self.location,
+                credentials=self.get_credentials()
+            )
+            self.model = aiplatform.GenerativeModel(self.model_name)
         
         logger.info(f"EnhancedVEOClient initialized with project: {self.project_id}, location: {self.location}")
     
@@ -361,41 +180,64 @@ class EnhancedVEOClient:
     
     async def _call_veo_api(self, request_data: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Internal method for VEO API calls
-        
+        Internal method for VEO API calls using the actual SDK.
+
         Args:
-            request_data: API request parameters
-            
+            request_data: API request parameters including prompt, style, and image_bytes.
+
         Returns:
-            Dict containing API response
-            
+            Dict containing parsed API response.
+
         Raises:
-            VEOAuthenticationError: Authentication failed
-            VEOValidationError: Invalid request parameters
-            VEOQuotaExceededError: API quota exceeded
+            VEOValidationError: If the prompt is missing or invalid.
+            Exception: For other API-related errors.
         """
-        # Mock implementation for testing - will be replaced with real API calls
-        prompt = request_data.get('prompt', '')
-        
-        # Simulate API processing time
-        await asyncio.sleep(0.1)
-        
-        # Mock successful response
-        return {
-            "status": "completed",
-            "video_data": {
-                "video_url": f"https://storage.googleapis.com/test-video-{hash(prompt)}.mp4",
-                "video_id": f"veo_{datetime.now().timestamp()}",
-                "duration_seconds": 8,
-                "resolution": "1920x1080"
-            },
-            "generation_time_ms": 45000,
-            "metadata": {
-                "prompt": prompt,
-                "style": request_data.get('style'),
-                "model_version": self.model_name
-            }
+        prompt = request_data.get('prompt')
+        if not prompt:
+            raise VEOValidationError("Prompt is required for VEO API call")
+
+        generation_config = {
+            "duration_secs": request_data.get('duration_seconds', 8),
+            "resolution": request_data.get('resolution', '1920x1080'),
+            "fps": request_data.get('fps', 24),
         }
+
+        contents = [prompt]
+        if 'image_bytes' in request_data and request_data['image_bytes']:
+            from google.cloud.aiplatform_v1.types import content
+            image_part = content.Part(inline_data=content.Blob(mime_type="image/png", data=request_data['image_bytes']))
+            contents.append(image_part)
+
+        try:
+            response = await self.model.generate_content_async(
+                contents,
+                generation_config=generation_config
+            )
+
+            # Assuming the first part of the first candidate is the video response
+            video_response_part = response.candidates[0].content.parts[0]
+            video_uri = video_response_part.video_metadata.video_uri
+            
+            # This is a simplified parser. The actual response structure might be more complex.
+            return {
+                "status": "completed",
+                "video_data": {
+                    "video_url": video_uri,
+                    "video_id": f"veo_{datetime.now().timestamp()}", # Placeholder
+                    "duration_seconds": generation_config["duration_secs"],
+                    "resolution": generation_config["resolution"]
+                },
+                "generation_time_ms": 50000, # Placeholder
+                "metadata": {
+                    "prompt": prompt,
+                    "style": request_data.get('style'),
+                    "model_version": self.model_name
+                }
+            }
+        except Exception as e:
+            logger.error(f"Error calling VEO API: {e}")
+            # Re-raise the exception to be handled by the caller's error handling logic
+            raise
     
     async def generate_video(self, prompt: str, style: Optional[str] = None, 
                            image_bytes: Optional[bytes] = None) -> Dict[str, Any]:

@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from 'react';
 import Dashboard from './components/Dashboard';
 import VideoList from './components/VideoList';
 import VideoUpload from './components/VideoUpload';
-import AIGenerationDashboard from './ai/components/AIGenerationDashboard';
+import VideoGenerationDashboard from './ai/components/VideoGenerationDashboard';
 import { 
   mockSystemStatus, 
   mockUsageStats, 
@@ -162,7 +162,7 @@ function App() {
 
         {/* ビュー切り替え */}
         {currentView === 'ai-generation' && (
-          <AIGenerationDashboard />
+          <VideoGenerationDashboard />
         )}
 
         {currentView === 'dashboard' && (

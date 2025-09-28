@@ -28,8 +28,8 @@ const mockHistoryResponse = [
     id: 'test-gen-123',
     request: {
       variables: { prompt: 'Test prompt for E2E' },
-      quality: 'hd',
-      aspect_ratio: '16:9'
+      quality: 'premium',
+      resolution: '1080p'
     },
     status: 'completed',
     created_at: '2025-09-22T22:30:00Z',
@@ -112,18 +112,18 @@ test.describe('T4C-001 Red Phase: Full Generation Flow E2E Tests', () => {
     
     // RED PHASE: This should FAIL because complete flow is not implemented
     // Wait for dashboard to load
-    await expect(page.getByText('AI Generation Dashboard')).toBeVisible();
+    await expect(page.getByText('Video Generation Dashboard')).toBeVisible();
     
-    // Open generation form
-    await page.click('text=Create New Generation');
+    // Open generation form - use button outside the modal
+    await page.click('button:has-text("Generate Video"):not(.modal-content button)');
     
     // Fill form with test parameters
     await page.fill('textarea[id="prompt"]', 'Test prompt for E2E generation');
-    await page.selectOption('select[id="quality"]', 'hd');
-    await page.selectOption('select[id="aspect_ratio"]', '16:9');
+    await page.selectOption('select[id="quality"]', 'premium');
+    await page.selectOption('select[id="resolution"]', '1080p');
     
-    // Submit generation request
-    await page.click('text=Start Generation');
+    // Submit generation request - use button inside the modal
+    await page.click('.modal-content button:has-text("Generate Video")');
     
     // RED PHASE: This should FAIL - loading state is not properly displayed
     await expect(page.getByText('Generating...')).toBeVisible();
@@ -158,9 +158,9 @@ test.describe('T4C-001 Red Phase: Full Generation Flow E2E Tests', () => {
     await page.goto('/');
     
     // Open form and submit
-    await page.click('text=Create New Generation');
+    await page.click('button:has-text("Generate Video")');
     await page.fill('textarea[id="prompt"]', 'Test loading state');
-    await page.click('text=Start Generation');
+    await page.click('button:has-text("Generate Video") >> nth=1');
     
     // RED PHASE: This should FAIL - loading state not implemented
     await expect(page.getByText('Generating...')).toBeVisible();
@@ -184,9 +184,9 @@ test.describe('T4C-001 Red Phase: Full Generation Flow E2E Tests', () => {
     await page.goto('/');
     
     // Submit generation that will fail
-    await page.click('text=Create New Generation');
+    await page.click('button:has-text("Generate Video")');
     await page.fill('textarea[id="prompt"]', 'Test error handling');
-    await page.click('text=Start Generation');
+    await page.click('button:has-text("Generate Video") >> nth=1');
     
     // RED PHASE: This should FAIL - error messages not displayed
     // Match actual error format: "Error: API Error: 400 Bad Request"
@@ -228,12 +228,12 @@ test.describe('T4C-001 Red Phase: Full Generation Flow E2E Tests', () => {
     await page.goto('/');
     
     // Initial load should call API once
-    await expect(page.getByText('AI Generation Dashboard')).toBeVisible();
+    await expect(page.getByText('Video Generation Dashboard')).toBeVisible();
     
     // Submit new generation
-    await page.click('text=Create New Generation');
+    await page.click('button:has-text("Generate Video")');
     await page.fill('textarea[id="prompt"]', 'Test history refresh');
-    await page.click('text=Start Generation');
+    await page.click('button:has-text("Generate Video") >> nth=1');
     
     // RED PHASE: This should FAIL - history is not refreshed after creation
     // Should call API again to refresh history
@@ -247,10 +247,10 @@ test.describe('T4C-001 Red Phase: Full Generation Flow E2E Tests', () => {
     await page.goto('/');
     
     // Open form without filling required fields
-    await page.click('text=Create New Generation');
+    await page.click('button:has-text("Generate Video")');
     
     // Try to submit with empty prompt
-    const submitButton = page.getByText('Start Generation');
+    const submitButton = page.getByText('Generate Video').last();
     
     // RED PHASE: This should FAIL - empty prompt submission is not prevented
     await expect(submitButton).toBeDisabled();
@@ -268,20 +268,20 @@ test.describe('T4C-001 Red Phase: Full Generation Flow E2E Tests', () => {
     await page.goto('/');
     
     // Fill and submit form
-    await page.click('text=Create New Generation');
+    await page.click('button:has-text("Generate Video")');
     await page.fill('textarea[id="prompt"]', 'Test form reset');
-    await page.selectOption('select[id="quality"]', 'hd');
-    await page.selectOption('select[id="aspect_ratio"]', '9:16');
-    await page.click('text=Start Generation');
+    await page.selectOption('select[id="quality"]', 'premium');
+    await page.selectOption('select[id="resolution"]', '720p');
+    await page.click('button:has-text("Generate Video") >> nth=1');
     
     // Wait for form to close and reopen
     await page.waitForTimeout(1000);
-    await page.click('text=Create New Generation');
+    await page.click('button:has-text("Generate Video")');
     
     // RED PHASE: This should FAIL - form fields are not reset
     await expect(page.locator('textarea[id="prompt"]')).toHaveValue('');
     await expect(page.locator('select[id="quality"]')).toHaveValue('standard');
-    await expect(page.locator('select[id="aspect_ratio"]')).toHaveValue('1:1');
+    await expect(page.locator('select[id="resolution"]')).toHaveValue('720p');
   });
 
   test('RED PHASE: should fail - API request contains correct parameters', async ({ page }) => {
@@ -302,11 +302,11 @@ test.describe('T4C-001 Red Phase: Full Generation Flow E2E Tests', () => {
     await page.goto('/');
     
     // Submit form with specific parameters
-    await page.click('text=Create New Generation');
+    await page.click('button:has-text("Generate Video")');
     await page.fill('textarea[id="prompt"]', 'Specific test prompt');
-    await page.selectOption('select[id="quality"]', 'hd');
-    await page.selectOption('select[id="aspect_ratio"]', '16:9');
-    await page.click('text=Start Generation');
+    await page.selectOption('select[id="quality"]', 'premium');
+    await page.selectOption('select[id="resolution"]', '1080p');
+    await page.click('button:has-text("Generate Video") >> nth=1');
     
     // Wait for API call
     await page.waitForTimeout(1000);
@@ -314,8 +314,8 @@ test.describe('T4C-001 Red Phase: Full Generation Flow E2E Tests', () => {
     // RED PHASE: This should FAIL - API request doesn't contain correct parameters
     expect(capturedRequest).toBeTruthy();
     expect(capturedRequest.variables.prompt).toBe('Specific test prompt');
-    expect(capturedRequest.quality).toBe('hd');
-    expect(capturedRequest.aspect_ratio).toBe('16:9');
+    expect(capturedRequest.quality).toBe('premium');
+    expect(capturedRequest.resolution).toBe('1080p');
     expect(capturedRequest.model).toBe('gemini-1.5-flash');
   });
 });

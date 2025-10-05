@@ -15,6 +15,8 @@ import type {
   VideoStatusType
 } from '../types/video';
 
+import type { Video } from '../types';
+
 const API_BASE_URL = 'http://localhost:8000';
 
 export interface ApiVideo {
@@ -458,13 +460,14 @@ class ApiClient {
   /**
    * T6-010: Add request to queue with priority handling
    */
-  private addToQueue(queuedRequest: any): void {
+  private addToQueue(queuedRequest: { request: () => Promise<any>, priority: 'low' | 'normal' | 'high', resolve: (value: any) => void, reject: (error: any) => void }): void {
     // Insert based on priority: high -> normal -> low
-    const priorityOrder = { 'high': 0, 'normal': 1, 'low': 2 };
+    const priorityOrder: Record<'high' | 'normal' | 'low', number> = { 'high': 0, 'normal': 1, 'low': 2 };
     let insertIndex = this.requestQueue.length;
     
     for (let i = 0; i < this.requestQueue.length; i++) {
-      if (priorityOrder[queuedRequest.priority] < priorityOrder[this.requestQueue[i].priority]) {
+      const currentPriority = this.requestQueue[i]?.priority;
+      if (currentPriority && priorityOrder[queuedRequest.priority] < priorityOrder[currentPriority]) {
         insertIndex = i;
         break;
       }
@@ -577,7 +580,6 @@ class ApiClient {
     }
   ): Promise<any> {
     const {
-      interval = 2000,
       maxInterval = 5000,
       initialInterval = 2000,
       accelerationThreshold = 80,
@@ -683,17 +685,30 @@ class ApiClient {
    * @returns デフォルト値が適用された完全なリクエスト
    */
   private buildGenerationRequest(request: GenerationRequest): GenerationRequest {
-    return {
-      model: 'gemini-1.5-flash',
-      quality: 'standard',
-      aspect_ratio: '1:1',
-      temperature: 0.7,
-      top_k: 40,
-      top_p: 0.95,
-      max_tokens: 2048,
-      variables: {},
-      ...request, // User値でオーバーライド
+    const result: GenerationRequest = {
+      model: request.model || 'gemini-1.5-flash',
+      quality: request.quality || 'standard',
+      aspect_ratio: request.aspect_ratio || '1:1',
+      temperature: request.temperature || 0.7,
+      top_k: request.top_k || 40,
+      top_p: request.top_p || 0.95,
+      max_tokens: request.max_tokens || 2048,
+      variables: request.variables || {},
+      prompt_template_id: request.prompt_template_id
     };
+    
+    // オプショナルプロパティは値が存在する場合のみ追加
+    if (request.negative_prompt !== undefined) {
+      result.negative_prompt = request.negative_prompt;
+    }
+    if (request.seed !== undefined) {
+      result.seed = request.seed;
+    }
+    if (request.style_preset !== undefined) {
+      result.style_preset = request.style_preset;
+    }
+    
+    return result;
   }
 
   /**
@@ -706,11 +721,10 @@ class ApiClient {
   private buildVideoGenerationRequest(request: VideoGenerationRequest): VideoGenerationRequest {
     return {
       prompt: request.prompt, // promptは必須のためデフォルト値なし
-      duration_seconds: 30,
-      resolution: '1080p',
-      fps: 30,
-      quality: 'standard',
-      ...request, // User値でオーバーライド
+      duration_seconds: request.duration_seconds || 30,
+      resolution: request.resolution || '1080p',
+      fps: request.fps || 30,
+      quality: request.quality || 'standard'
     };
   }
 
@@ -882,7 +896,7 @@ export const apiClient = new ApiClient();
 /**
  * 動画管理用：バックエンドAPIVideo型をフロントエンドVideo型に変換
  */
-export const convertApiVideoToVideo = (apiVideo: ApiVideo) => {
+export const convertApiVideoToVideo = (apiVideo: ApiVideo): Video => {
   return {
     id: apiVideo.id,
     filename: apiVideo.file_path.split('/').pop() || apiVideo.title,
@@ -897,7 +911,7 @@ export const convertApiVideoToVideo = (apiVideo: ApiVideo) => {
     thumbnail_url: '/thumbnails/default.jpg', // TODO: Generate thumbnails in Phase 2
     is_manual_upload: true,
     prompt: null,
-    playback_status: apiVideo.status === 'active' ? 'available' : 'processing'
+    playback_status: apiVideo.status === 'active' ? 'available' as const : 'error' as const
   };
 };
 

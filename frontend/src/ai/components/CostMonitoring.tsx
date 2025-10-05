@@ -138,7 +138,7 @@ const createMockApiService = () => ({
     };
   },
 
-  updateBudgetSettings: async (settings: Partial<BudgetSettings>): Promise<{ success: boolean }> => {
+  updateBudgetSettings: async (_settings: Partial<BudgetSettings>): Promise<{ success: boolean }> => {
     await new Promise(resolve => setTimeout(resolve, 100));
     return { success: true };
   },
@@ -161,7 +161,7 @@ const createMockApiService = () => ({
     };
   },
 
-  exportCostReport: async (params?: any): Promise<{ downloadUrl: string }> => {
+  exportCostReport: async (_params?: any): Promise<{ downloadUrl: string }> => {
     await new Promise(resolve => setTimeout(resolve, 100));
     return { downloadUrl: 'http://example.com/report.pdf' };
   },
@@ -188,12 +188,12 @@ const createMockApiService = () => ({
     ];
   },
 
-  dismissAlert: async (alertId: string): Promise<{ success: boolean }> => {
+  dismissAlert: async (_alertId: string): Promise<{ success: boolean }> => {
     await new Promise(resolve => setTimeout(resolve, 50));
     return { success: true };
   },
 
-  createBudgetAlert: async (alertConfig: any): Promise<{ id: string; success: boolean }> => {
+  createBudgetAlert: async (_alertConfig: any): Promise<{ id: string; success: boolean }> => {
     await new Promise(resolve => setTimeout(resolve, 100));
     return { id: 'new_alert', success: true };
   }
@@ -720,7 +720,7 @@ const CostMonitoring: React.FC = () => {
         </section>
       )}
 
-      <style jsx>{`
+      <style>{`
         .cost-monitoring-dashboard {
           padding: 20px;
           max-width: 1200px;

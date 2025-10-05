@@ -202,7 +202,7 @@ const VideoList: React.FC<VideoListProps> = ({
               value={selectedCategory} 
               onChange={(e) => setSelectedCategory(e.target.value)}
             >
-              {filterOptions.categories.map(category => (
+              {(filterOptions.categories ?? []).map(category => (
                 <option key={category} value={category}>{category}</option>
               ))}
             </select>
@@ -258,7 +258,7 @@ const VideoList: React.FC<VideoListProps> = ({
       {/* タグフィルター */}
       <div className="tag-filter">
         <span>タグ:</span>
-        {filterOptions.tags.map(tag => (
+        {(filterOptions.tags ?? []).map(tag => (
           <button
             key={tag}
             className={`tag-btn ${selectedTags.includes(tag) ? 'selected' : ''}`}

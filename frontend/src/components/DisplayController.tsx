@@ -8,12 +8,8 @@ import React, { useState, useEffect } from 'react';
 import type { DisplayControllerProps, DisplayStatus } from '../types';
 
 const DisplayController: React.FC<DisplayControllerProps> = ({
-  currentVideo,
-  displayStatus,
-  onPlay,
-  onPause,
-  onStop,
-  onVolumeChange,
+  status,
+  onModeChange,
   onFullscreenToggle
 }) => {
   const [volume, setVolume] = useState(75);
@@ -21,17 +17,16 @@ const DisplayController: React.FC<DisplayControllerProps> = ({
   const [currentTime, setCurrentTime] = useState(0);
 
   // 表示状態のアイコンとラベル
-  const getStatusDisplay = (status: DisplayStatus) => {
-    switch (status) {
-      case 'playing': return { icon: '▶️', label: '再生中', color: '#4CAF50' };
-      case 'paused': return { icon: '⏸️', label: '一時停止', color: '#FF9800' };
-      case 'stopped': return { icon: '⏹️', label: '停止中', color: '#757575' };
-      case 'loading': return { icon: '⏳', label: '読み込み中', color: '#2196F3' };
-      default: return { icon: '⚪', label: '待機中', color: '#9E9E9E' };
+  const getStatusDisplay = (displayStatus: DisplayStatus) => {
+    switch (displayStatus.mode) {
+      case 'video': return { icon: '🎬', label: '動画表示', color: '#4CAF50' };
+      case 'image': return { icon: '🖼️', label: '画像表示', color: '#FF9800' };
+      case 'idle': return { icon: '💤', label: 'アイドル', color: '#9E9E9E' };
+      default: return { icon: '❓', label: '不明', color: '#9E9E9E' };
     }
   };
 
-  const statusInfo = getStatusDisplay(displayStatus);
+  const statusInfo = getStatusDisplay(status);
 
   // 時間フォーマット（秒 → mm:ss）
   const formatTime = (seconds: number) => {
@@ -40,86 +35,60 @@ const DisplayController: React.FC<DisplayControllerProps> = ({
     return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
   };
 
-  // 再生制御イベントハンドラー
-  const handlePlay = async () => {
-    try {
-      await onPlay?.(currentVideo?.id);
-    } catch (error) {
-      console.error('再生エラー:', error);
-    }
-  };
-
-  const handlePause = async () => {
-    try {
-      await onPause?.();
-    } catch (error) {
-      console.error('一時停止エラー:', error);
-    }
-  };
-
-  const handleStop = async () => {
-    try {
-      await onStop?.();
-      setCurrentTime(0);
-    } catch (error) {
-      console.error('停止エラー:', error);
-    }
-  };
+  // イベントハンドラーは直接呼び出しに変更（技術的負債として記録）
 
   const handleVolumeChange = (newVolume: number) => {
     setVolume(newVolume);
-    onVolumeChange?.(newVolume);
+    // ボリューム変更はDisplayControllerPropsにないため、削除
   };
 
   const handleFullscreenToggle = () => {
     const newFullscreenState = !isFullscreen;
     setIsFullscreen(newFullscreenState);
-    onFullscreenToggle?.(newFullscreenState);
+    onFullscreenToggle();
   };
 
   // 現在時刻更新（デモ用）
   useEffect(() => {
     let interval: NodeJS.Timeout;
     
-    if (displayStatus === 'playing' && currentVideo) {
+    if (status.mode === 'video' && status.current_content_id) {
       interval = setInterval(() => {
-        setCurrentTime(prev => Math.min(prev + 1, currentVideo.duration || 0));
+        setCurrentTime(prev => Math.min(prev + 1, 300)); // 5分のデモ用
       }, 1000);
     }
 
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [displayStatus, currentVideo]);
+  }, [status.mode, status.current_content_id]);
 
   return (
     <div className="display-controller">
       {/* 現在の動画情報 */}
       <div className="current-video-info">
         <h3>🎬 現在の動画</h3>
-        {currentVideo ? (
+        {status.current_content_id ? (
           <div className="video-details">
-            <div className="video-title">{currentVideo.title}</div>
-            <div className="video-metadata">
-              <span className="duration">{formatTime(currentVideo.duration || 0)}</span>
-              <span className="format">・{currentVideo.format?.toUpperCase()}</span>
-              <span className="size">・{Math.round((currentVideo.file_size || 0) / 1024 / 1024)}MB</span>
+            <div className="content-title">コンテンツID: {status.current_content_id}</div>
+            <div className="display-metadata">
+              <span className="mode">モード: {status.mode}</span>
+              <span className="brightness">・輝度: {status.brightness}%</span>
+              <span className="fullscreen">{status.fullscreen ? '・フルスクリーン' : '・ウィンドウ'}</span>
             </div>
             <div className="progress-info">
               <span className="current-time">{formatTime(currentTime)}</span>
               <div className="progress-bar">
                 <div 
                   className="progress-fill"
-                  style={{ 
-                    width: `${currentVideo.duration ? (currentTime / currentVideo.duration) * 100 : 0}%` 
-                  }}
+                  style={{ width: `${(currentTime / 300) * 100}%` }}
                 />
               </div>
-              <span className="total-time">{formatTime(currentVideo.duration || 0)}</span>
+              <span className="total-time">{formatTime(300)}</span>
             </div>
           </div>
         ) : (
-          <div className="no-video">動画が選択されていません</div>
+          <div className="no-content">コンテンツが選択されていません</div>
         )}
       </div>
 
@@ -138,8 +107,8 @@ const DisplayController: React.FC<DisplayControllerProps> = ({
       <div className="main-controls">
         <button 
           className="control-btn play-btn"
-          onClick={handlePlay}
-          disabled={!currentVideo || displayStatus === 'playing'}
+          onClick={() => onModeChange('video')}
+          disabled={false}
           title="再生"
         >
           ▶️ 再生
@@ -147,8 +116,8 @@ const DisplayController: React.FC<DisplayControllerProps> = ({
 
         <button 
           className="control-btn pause-btn"
-          onClick={handlePause}
-          disabled={displayStatus !== 'playing'}
+          onClick={() => onModeChange('idle')}
+          disabled={false}
           title="一時停止"
         >
           ⏸️ 一時停止
@@ -156,8 +125,8 @@ const DisplayController: React.FC<DisplayControllerProps> = ({
 
         <button 
           className="control-btn stop-btn"
-          onClick={handleStop}
-          disabled={displayStatus === 'stopped'}
+          onClick={() => onModeChange('idle')}
+          disabled={false}
           title="停止"
         >
           ⏹️ 停止
@@ -201,14 +170,14 @@ const DisplayController: React.FC<DisplayControllerProps> = ({
       <div className="emergency-controls">
         <button 
           className="emergency-stop-btn"
-          onClick={handleStop}
+          onClick={() => onModeChange('idle')}
           title="緊急停止"
         >
           🛑 緊急停止
         </button>
       </div>
 
-      <style jsx>{`
+      <style>{`
         .display-controller {
           background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
           border-radius: 15px;

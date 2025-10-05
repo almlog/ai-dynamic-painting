@@ -9,23 +9,35 @@ import VideoUpload from '../components/VideoUpload';
 import VideoList from '../components/VideoList';
 import DisplayController from '../components/DisplayController';
 import Dashboard from '../components/Dashboard';
+import VideoGeneration from '../components/VideoGeneration';
 import type { Video, SystemStatus, DisplayStatus } from '../types';
+import type { VideoGenerationResponse } from '../types/video';
 
 const MainDashboard: React.FC = () => {
   // 状態管理
   const [videos, setVideos] = useState<Video[]>([]);
   const [currentVideo, setCurrentVideo] = useState<Video | null>(null);
-  const [displayStatus, setDisplayStatus] = useState<DisplayStatus>('stopped');
+  const [displayStatus, setDisplayStatus] = useState<DisplayStatus>({
+    mode: 'idle',
+    current_content_id: null,
+    brightness: 100,
+    overlay_enabled: false,
+    fullscreen: false,
+    last_updated: new Date().toISOString()
+  });
   const [systemStatus, setSystemStatus] = useState<SystemStatus>({
-    api_status: 'healthy',
-    m5stack_status: 'offline',
-    display_status: 'idle',
-    uptime: 0,
-    cpu_usage: 0,
-    memory_usage: 0,
-    disk_usage: 0,
-    active_sessions: 0,
-    total_videos: 0
+    status: 'healthy',
+    timestamp: new Date().toISOString(),
+    version: '1.0.0',
+    uptime_seconds: 0,
+    database: {
+      connected: true,
+      tables_count: 5
+    },
+    storage: {
+      videos_directory_exists: true,
+      free_space_mb: 1000
+    }
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -67,7 +79,7 @@ const MainDashboard: React.FC = () => {
       if (!response.ok) throw new Error('表示状態の取得に失敗しました');
       
       const data = await response.json();
-      setDisplayStatus(data.status || 'stopped');
+      setDisplayStatus(prev => ({ ...prev, mode: data.status === 'playing' ? 'video' : 'idle', last_updated: new Date().toISOString() }));
       
       if (data.current_video_id) {
         const video = videos.find(v => v.id === data.current_video_id);
@@ -125,7 +137,7 @@ const MainDashboard: React.FC = () => {
       // 削除された動画が現在再生中の場合
       if (currentVideo?.id === videoId) {
         setCurrentVideo(null);
-        setDisplayStatus('stopped');
+        setDisplayStatus(prev => ({ ...prev, mode: 'idle', current_content_id: null, last_updated: new Date().toISOString() }));
       }
       
       fetchSystemStatus(); // 統計情報更新
@@ -135,74 +147,27 @@ const MainDashboard: React.FC = () => {
     }
   };
 
-  // 動画再生
-  const handleVideoPlay = async (videoId?: string) => {
-    try {
-      const targetVideoId = videoId || currentVideo?.id;
-      if (!targetVideoId) return;
 
-      const response = await fetch(`${API_BASE_URL}/display/play`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ video_id: targetVideoId })
-      });
 
-      if (!response.ok) throw new Error('再生の開始に失敗しました');
-      
-      const video = videos.find(v => v.id === targetVideoId);
-      setCurrentVideo(video || null);
-      setDisplayStatus('playing');
-    } catch (err) {
-      console.error('再生エラー:', err);
-      setError('動画の再生に失敗しました');
-    }
+
+
+
+  // VEO動画生成完了時
+  const handleVideoGenerationComplete = (response: VideoGenerationResponse) => {
+    console.log('✅ VEO動画生成完了:', response);
+    // TODO: 生成履歴UI実装時に生成ログを更新
   };
 
-  // 動画一時停止
-  const handleVideoPause = async () => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/display/pause`, {
-        method: 'POST'
-      });
-
-      if (!response.ok) throw new Error('一時停止に失敗しました');
-      
-      setDisplayStatus('paused');
-    } catch (err) {
-      console.error('一時停止エラー:', err);
-      setError('一時停止に失敗しました');
-    }
+  // VEO動画生成エラー時
+  const handleVideoGenerationError = (errorMessage: string) => {
+    console.error('❌ VEO動画生成エラー:', errorMessage);
+    setError(`動画生成エラー: ${errorMessage}`);
   };
 
-  // 動画停止
-  const handleVideoStop = async () => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/display/stop`, {
-        method: 'POST'
-      });
-
-      if (!response.ok) throw new Error('停止に失敗しました');
-      
-      setDisplayStatus('stopped');
-      setCurrentVideo(null);
-    } catch (err) {
-      console.error('停止エラー:', err);
-      setError('停止に失敗しました');
-    }
-  };
-
-  // 音量変更（今回はログのみ）
-  const handleVolumeChange = (volume: number) => {
-    console.log(`音量を${volume}%に変更`);
-    // 実際のAPI実装時にここに音量制御APIを追加
-  };
-
-  // フルスクリーン切替（今回はログのみ）
-  const handleFullscreenToggle = (isFullscreen: boolean) => {
-    console.log(`フルスクリーン: ${isFullscreen ? 'ON' : 'OFF'}`);
-    // 実際のAPI実装時にここに表示モード変更APIを追加
+  // VEO動画生成進捗更新時
+  const handleVideoGenerationProgress = (progress: number) => {
+    console.log(`🎬 VEO動画生成進捗: ${progress}%`);
+    // TODO: プログレス表示UI実装時に進捗バーを更新
   };
 
   // エラー表示クリア
@@ -223,8 +188,8 @@ const MainDashboard: React.FC = () => {
     <div className="main-dashboard">
       {/* ヘッダー */}
       <header className="dashboard-header">
-        <h1>🎨 AI動的絵画システム - Phase 1</h1>
-        <p className="subtitle">手動動画管理システム v1.0</p>
+        <h1>🎨 AI動的絵画システム - Phase 6</h1>
+        <p className="subtitle">VEO API統合 AI動画生成システム v6.0</p>
         {error && (
           <div className="error-banner">
             <span>⚠️ {error}</span>
@@ -238,15 +203,29 @@ const MainDashboard: React.FC = () => {
         {/* 左カラム: アップロード & 動画リスト */}
         <div className="left-column">
           <section className="upload-section">
-            <VideoUpload onUploadSuccess={handleVideoUploadSuccess} />
+            <VideoUpload 
+              onUploadComplete={handleVideoUploadSuccess}
+              onUploadError={(error) => setError(error)}
+              maxFileSize={100 * 1024 * 1024} // 100MB
+              acceptedFormats={['mp4', 'avi', 'mov', 'mkv']}
+            />
+          </section>
+
+          <section className="veo-generation-section">
+            <VideoGeneration
+              onGenerationComplete={handleVideoGenerationComplete}
+              onGenerationError={handleVideoGenerationError}
+              onProgressUpdate={handleVideoGenerationProgress}
+            />
           </section>
           
           <section className="video-list-section">
             <VideoList 
               videos={videos}
               currentVideo={currentVideo}
+              filterOptions={{ sortBy: 'name', filterBy: 'all' }}
               onVideoSelect={setCurrentVideo}
-              onVideoPlay={handleVideoPlay}
+              onVideoUpload={() => {}}
               onVideoDelete={handleVideoDelete}
             />
           </section>
@@ -256,13 +235,11 @@ const MainDashboard: React.FC = () => {
         <div className="right-column">
           <section className="display-control-section">
             <DisplayController
-              currentVideo={currentVideo}
-              displayStatus={displayStatus}
-              onPlay={handleVideoPlay}
-              onPause={handleVideoPause}
-              onStop={handleVideoStop}
-              onVolumeChange={handleVolumeChange}
-              onFullscreenToggle={handleFullscreenToggle}
+              status={displayStatus}
+              onModeChange={(mode) => setDisplayStatus(prev => ({ ...prev, mode, last_updated: new Date().toISOString() }))}
+              onBrightnessChange={(brightness) => setDisplayStatus(prev => ({ ...prev, brightness, last_updated: new Date().toISOString() }))}
+              onOverlayToggle={() => setDisplayStatus(prev => ({ ...prev, overlay_enabled: !prev.overlay_enabled, last_updated: new Date().toISOString() }))}
+              onFullscreenToggle={() => setDisplayStatus(prev => ({ ...prev, fullscreen: !prev.fullscreen, last_updated: new Date().toISOString() }))}
             />
           </section>
 
@@ -271,9 +248,9 @@ const MainDashboard: React.FC = () => {
               systemStatus={systemStatus}
               currentVideo={currentVideo}
               usageStats={{
-                totalVideos: videos.length,
-                totalSize: videos.reduce((sum, v) => sum + (v.file_size || 0), 0),
-                avgDuration: videos.length > 0 
+                total_videos: videos.length,
+                total_size: videos.reduce((sum, v) => sum + (v.file_size || 0), 0),
+                avg_duration: videos.length > 0 
                   ? videos.reduce((sum, v) => sum + (v.duration || 0), 0) / videos.length 
                   : 0
               }}
@@ -287,12 +264,12 @@ const MainDashboard: React.FC = () => {
       <footer className="dashboard-footer">
         <div className="footer-info">
           <span>🤖 博士のAI動的絵画システム</span>
-          <span>Phase 1: 手動動画管理</span>
-          <span>稼働時間: {Math.floor(systemStatus.uptime / 3600)}時間</span>
+          <span>Phase 6: VEO API統合完了</span>
+          <span>稼働時間: {Math.floor(systemStatus.uptime_seconds / 3600)}時間</span>
         </div>
       </footer>
 
-      <style jsx>{`
+      <style>{`
         .main-dashboard {
           min-height: 100vh;
           background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);

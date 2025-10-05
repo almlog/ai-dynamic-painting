@@ -138,20 +138,20 @@ const Dashboard: React.FC<DashboardProps> = ({
               <span className="status-icon">📊</span>
             </div>
             <div className="card-content">
-              <div className="status-value" style={{ color: getUsageColor(usageStats.monthly_used, usageStats.monthly_limit) }}>
-                {usageStats.monthly_used}/{usageStats.monthly_limit}
+              <div className="status-value" style={{ color: getUsageColor(usageStats.monthly_used ?? 0, usageStats.monthly_limit ?? 0) }}>
+                {usageStats.monthly_used ?? 0}/{usageStats.monthly_limit ?? 0}
               </div>
               <div className="progress-bar">
                 <div 
                   className="progress-fill"
                   style={{ 
-                    width: `${(usageStats.monthly_used / usageStats.monthly_limit) * 100}%`,
-                    backgroundColor: getUsageColor(usageStats.monthly_used, usageStats.monthly_limit)
+                    width: `${((usageStats.monthly_used ?? 0) / (usageStats.monthly_limit ?? 1)) * 100}%`,
+                    backgroundColor: getUsageColor(usageStats.monthly_used ?? 0, usageStats.monthly_limit ?? 0)
                   }}
                 ></div>
               </div>
               <div className="status-detail">
-                今日: {usageStats.daily_used}/{usageStats.daily_limit}
+                今日: {usageStats.daily_used ?? 0}/{usageStats.daily_limit ?? 0}
               </div>
             </div>
           </div>
@@ -163,15 +163,15 @@ const Dashboard: React.FC<DashboardProps> = ({
             </div>
             <div className="card-content">
               <div className="status-value">
-                {formatFileSize(usageStats.storage_used_gb * 1024 * 1024 * 1024)} / 
-                {formatFileSize(usageStats.storage_total_gb * 1024 * 1024 * 1024)}
+                {formatFileSize((usageStats.storage_used_gb ?? 0) * 1024 * 1024 * 1024)} / 
+                {formatFileSize((usageStats.storage_total_gb ?? 0) * 1024 * 1024 * 1024)}
               </div>
               <div className="progress-bar">
                 <div 
                   className="progress-fill"
                   style={{ 
-                    width: `${(usageStats.storage_used_gb / usageStats.storage_total_gb) * 100}%`,
-                    backgroundColor: getUsageColor(usageStats.storage_used_gb, usageStats.storage_total_gb)
+                    width: `${((usageStats.storage_used_gb ?? 0) / (usageStats.storage_total_gb ?? 1)) * 100}%`,
+                    backgroundColor: getUsageColor(usageStats.storage_used_gb ?? 0, usageStats.storage_total_gb ?? 0)
                   }}
                 ></div>
               </div>

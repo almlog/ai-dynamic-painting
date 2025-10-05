@@ -39,9 +39,9 @@ interface NewGenerationForm {
   prompt: string;
   quality: 'standard' | 'hd';
   aspect_ratio: '1:1' | '16:9' | '9:16';
-  style_preset?: 'anime' | 'photographic' | 'digital-art';
-  negative_prompt?: string;
-  seed?: number;
+  style_preset: 'anime' | 'photographic' | 'digital-art';
+  negative_prompt: string;
+  seed: number;
 }
 
 // T4B-002: Real API service using T4B-001 implementation
@@ -161,9 +161,9 @@ const AIGenerationDashboard: React.FC = () => {
     prompt: '',
     quality: 'standard',
     aspect_ratio: '1:1',
-    style_preset: undefined,
-    negative_prompt: undefined,
-    seed: undefined
+    style_preset: 'anime',
+    negative_prompt: '',
+    seed: 0
   });
 
   // Load data on component mount
@@ -193,34 +193,6 @@ const AIGenerationDashboard: React.FC = () => {
     }
   };
 
-  const setupWebSocket = () => {
-    // T4B-002: Real-time updates using polling (WebSocket server not implemented yet)
-    const pollProcessingGenerations = async () => {
-      try {
-        const processingGens = generations.filter(g => isGenerationInProgress(g.status));
-        
-        for (const gen of processingGens) {
-          try {
-            const updatedGen = await realApiService.getGenerationStatus(gen.id);
-            setGenerations(prev => prev.map(g => 
-              g.id === gen.id ? updatedGen : g
-            ));
-          } catch (error) {
-            console.error(`Failed to update status for generation ${gen.id}:`, error);
-          }
-        }
-      } catch (error) {
-        console.error('Failed to poll generation statuses:', error);
-      }
-    };
-    
-    // Poll every 5 seconds for processing generations
-    const pollInterval = setInterval(pollProcessingGenerations, 5000);
-    
-    return () => {
-      clearInterval(pollInterval);
-    };
-  };
 
   // Removed unused updateGenerationStatus function for T4B-002 refactor
 
@@ -229,7 +201,7 @@ const AIGenerationDashboard: React.FC = () => {
       setCreateError(null);
       setIsGenerating(true);
       
-      const result = await realApiService.createGeneration(formData);
+      await realApiService.createGeneration(formData);
       
       // Success: close form and refresh data
       setShowCreateForm(false);
@@ -238,9 +210,9 @@ const AIGenerationDashboard: React.FC = () => {
         prompt: '', 
         quality: 'standard',
         aspect_ratio: '1:1',
-        style_preset: undefined,
-        negative_prompt: undefined,
-        seed: undefined
+        style_preset: 'anime',
+        negative_prompt: '',
+        seed: 0
       });
       
       // Refresh generation history to show new item
@@ -271,9 +243,9 @@ const AIGenerationDashboard: React.FC = () => {
       prompt: generation.prompt || 'Generated Image',
       quality: (generation.quality === 'hd' ? 'hd' : 'standard') as 'standard' | 'hd',
       aspect_ratio: generation.request?.aspect_ratio || '1:1',
-      style_preset: generation.request?.style_preset,
-      negative_prompt: generation.request?.negative_prompt,
-      seed: generation.request?.seed
+      style_preset: generation.request?.style_preset || 'photographic',
+      negative_prompt: generation.request?.negative_prompt || '',
+      seed: generation.request?.seed || 0
     };
     setFormData(retryData);
     setShowCreateForm(true);

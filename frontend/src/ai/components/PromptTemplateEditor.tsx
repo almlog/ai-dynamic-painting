@@ -25,6 +25,7 @@ interface PromptTemplate {
   createdBy: string;
   createdAt: string;
   updatedAt: string;
+  updatedBy?: string; // 追加
   usageCount: number;
 }
 
@@ -115,15 +116,15 @@ const mockApiService = {
     return { id: 'new_template', ...data, createdBy: 'current_user', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), usageCount: 0 };
   },
 
-  async updatePromptTemplate(id: string, data: Partial<NewTemplateForm>): Promise<{ success: boolean }> {
+  async updatePromptTemplate(_id: string, _data: Partial<NewTemplateForm>): Promise<{ success: boolean }> {
     return { success: true };
   },
 
-  async deletePromptTemplate(id: string): Promise<{ success: boolean }> {
+  async deletePromptTemplate(_id: string): Promise<{ success: boolean }> {
     return { success: true };
   },
 
-  async generatePreview(request: PreviewRequest): Promise<{ preview: string }> {
+  async generatePreview(_request: PreviewRequest): Promise<{ preview: string }> {
     return { preview: 'A beautiful sunrise scene showing mountains in forest, cinematic style' };
   }
 };
@@ -208,6 +209,7 @@ const PromptTemplateEditor: React.FC = () => {
       return () => ws.close();
     } catch (err) {
       setConnectionStatus('disconnected');
+      return undefined; // エラー発生時も明示的に undefined を返す
     }
   };
 

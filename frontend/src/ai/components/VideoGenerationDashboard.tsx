@@ -4,10 +4,10 @@
  */
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { apiClient, isGenerationComplete, isGenerationFailed, isGenerationInProgress } from '../../services/api';
+import { apiClient } from '../../services/api';
 import { useVideoPolling } from '../../hooks/useVideoPolling';
 import VideoGenerationForm from './VideoGenerationForm';
-import VideoProgressDisplay from './VideoProgressDisplay';
+// import VideoProgressDisplay from './VideoProgressDisplay'; // Unused for now
 import GenerationHistoryTable from './GenerationHistoryTable';
 import CostManagementPanel from './CostManagementPanel';
 
@@ -41,7 +41,8 @@ interface VideoGenerationRequest {
 const videoApiService = {
   async getGenerationHistory(): Promise<VideoGeneration[]> {
     try {
-      return await apiClient.getGenerationHistory();
+      const results = await apiClient.getGenerationHistory();
+      return results as unknown as VideoGeneration[];
     } catch (error) {
       console.error('Failed to get generation history:', error);
       return [];
@@ -107,11 +108,11 @@ const VideoGenerationDashboard: React.FC = () => {
   };
 
   // T6-009: UseVideoPolling integration for real-time updates
-  const { generation: pollingGeneration, isPolling, error: pollingError, stopPolling, startPolling } = useVideoPolling(currentTaskId, {
+  const { generation: pollingGeneration, isPolling, error: pollingError, stopPolling } = useVideoPolling(currentTaskId, {
     onComplete: (completedGeneration) => {
       console.log('Video generation completed:', completedGeneration);
       // T6-009 REFACTOR: Centralized state management
-      generationListManager.updateGeneration(completedGeneration);
+      generationListManager.updateGeneration(completedGeneration as VideoGeneration);
       setCurrentTaskId(null); // Clear current task to stop polling display
     },
     onError: (error) => {
@@ -173,7 +174,7 @@ const VideoGenerationDashboard: React.FC = () => {
 
   // T6-009 REFACTOR: Simplified combined generations using manager
   const combinedGenerations = useMemo(() => 
-    generationListManager.getCombinedList(generations, pollingGeneration),
+    generationListManager.getCombinedList(generations, pollingGeneration as VideoGeneration | null),
     [pollingGeneration, generations]
   );
 

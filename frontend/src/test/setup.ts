@@ -1,4 +1,5 @@
 import '@testing-library/jest-dom';
+import { vi, beforeAll, afterAll } from 'vitest';
 
 // Mock functions for browser APIs that are not available in test environment
 Object.defineProperty(window, 'matchMedia', {

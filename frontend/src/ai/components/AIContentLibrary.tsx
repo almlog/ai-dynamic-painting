@@ -39,7 +39,7 @@ interface Category {
 
 // Mock API service for testing
 const createMockApiService = () => ({
-  getContentLibrary: async (params?: any): Promise<ContentItem[]> => {
+  getContentLibrary: async (): Promise<ContentItem[]> => {
     await new Promise(resolve => setTimeout(resolve, 100));
     return [
       {
@@ -113,44 +113,86 @@ const createMockApiService = () => ({
 
   searchContent: async (params: any): Promise<ContentItem[]> => {
     await new Promise(resolve => setTimeout(resolve, 50));
-    const allContent = await this.getContentLibrary();
-    return allContent.filter(item => 
-      item.title.toLowerCase().includes(params.query.toLowerCase()) ||
-      item.tags.some(tag => tag.toLowerCase().includes(params.query.toLowerCase()))
+    // getContentLibraryの実装を直接インライン化
+    const allContent: ContentItem[] = [
+      {
+        id: '1',
+        title: 'Mountain Sunset',
+        description: 'A beautiful sunset over mountain peaks',
+        category: 'nature',
+        tags: ['sunset', 'mountain', 'landscape'],
+        thumbnailUrl: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4',
+        videoUrl: 'https://videos.example.com/mountain-sunset.mp4',
+        duration: 120,
+        resolution: '1920x1080',
+        fileSize: '12.5 MB',
+        rating: 4.8,
+        downloadCount: 245,
+        favorited: true,
+        createdAt: '2023-10-15T10:30:00Z',
+        metadata: { prompt: 'Mountain sunset landscape', style: 'photorealistic', quality: 'HD', cost: 0.05 }
+      }
+    ];
+    if (!Array.isArray(allContent)) return [];
+    return allContent.filter((item: any) => 
+      item?.title?.toLowerCase().includes(params.query.toLowerCase()) ||
+      (item?.tags || []).some((tag: string) => tag.toLowerCase().includes(params.query.toLowerCase()))
     );
   },
 
   getContentDetails: async (id: string): Promise<ContentItem> => {
-    const allContent = await this.getContentLibrary();
-    return allContent.find(item => item.id === id) || allContent[0];
+    // getContentLibraryの実装を直接インライン化
+    const allContent: ContentItem[] = [
+      {
+        id: '1',
+        title: 'Mountain Sunset',
+        description: 'A beautiful sunset over mountain peaks',
+        category: 'nature',
+        tags: ['sunset', 'mountain', 'landscape'],
+        thumbnailUrl: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4',
+        videoUrl: 'https://videos.example.com/mountain-sunset.mp4',
+        duration: 120,
+        resolution: '1920x1080',
+        fileSize: '12.5 MB',
+        rating: 4.8,
+        downloadCount: 245,
+        favorited: true,
+        createdAt: '2023-10-15T10:30:00Z',
+        metadata: { prompt: 'Mountain sunset landscape', style: 'photorealistic', quality: 'HD', cost: 0.05 }
+      }
+    ];
+    if (!Array.isArray(allContent) || allContent.length === 0) {
+      throw new Error('Content not found');
+    }
+    return allContent.find((item: any) => item?.id === id) || allContent[0];
   },
 
-  favoriteContent: async (id: string): Promise<{ success: boolean }> => {
+  favoriteContent: async (_id: string): Promise<{ success: boolean }> => {
     await new Promise(resolve => setTimeout(resolve, 50));
     return { success: true };
   },
 
-  unfavoriteContent: async (id: string): Promise<{ success: boolean }> => {
+  unfavoriteContent: async (_id: string): Promise<{ success: boolean }> => {
     await new Promise(resolve => setTimeout(resolve, 50));
     return { success: true };
   },
 
-  rateContent: async (id: string, rating: number): Promise<{ success: boolean }> => {
+  rateContent: async (_id: string, _rating: number): Promise<{ success: boolean }> => {
     await new Promise(resolve => setTimeout(resolve, 100));
     return { success: true };
   },
 
-  deleteContent: async (id: string): Promise<{ success: boolean }> => {
+  deleteContent: async (_id: string): Promise<{ success: boolean }> => {
     await new Promise(resolve => setTimeout(resolve, 100));
     return { success: true };
   },
 
-  downloadContent: async (id: string): Promise<{ downloadUrl: string }> => {
+  downloadContent: async (_id: string): Promise<{ downloadUrl: string }> => {
     await new Promise(resolve => setTimeout(resolve, 100));
     return { downloadUrl: 'https://storage.example.com/download.mp4' };
   },
 
-  shareContent: async (id: string): Promise<{ shareUrl: string }> => {
+  shareContent: async (_id: string): Promise<{ shareUrl: string }> => {
     await new Promise(resolve => setTimeout(resolve, 50));
     return { shareUrl: 'https://share.example.com/video1' };
   },
@@ -165,7 +207,7 @@ const createMockApiService = () => ({
     ];
   },
 
-  bulkOperation: async (operation: string, ids: string[]): Promise<{ success: boolean; processed: number }> => {
+  bulkOperation: async (_operation: string, ids: string[]): Promise<{ success: boolean; processed: number }> => {
     await new Promise(resolve => setTimeout(resolve, 200));
     return { success: true, processed: ids.length };
   }
@@ -192,13 +234,13 @@ const AIContentLibrary: React.FC = () => {
 
   const apiService = createMockApiService();
 
-  const loadContent = useCallback(async (params?: any) => {
+  const loadContent = useCallback(async (_params?: any) => {
     try {
       setLoading(true);
       setError(null);
       
       const [contentData, categoriesData] = await Promise.all([
-        apiService.getContentLibrary(params),
+        apiService.getContentLibrary(),
         apiService.getContentCategories()
       ]);
       
@@ -222,20 +264,21 @@ const AIContentLibrary: React.FC = () => {
 
     // Search filter
     if (searchQuery) {
-      filtered = filtered.filter(item =>
-        item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
-      );
+      filtered = filtered.filter((item: ContentItem) => { // item を ContentItem として明示的にアサート
+        if (!item) return false; // 防御的プログラミングのために保持
+        return item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+               item.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
+      });
     }
 
     // Category filter
     if (categoryFilter !== 'all') {
-      filtered = filtered.filter(item => item.category === categoryFilter);
+      filtered = filtered.filter((item: ContentItem) => item && item.category === categoryFilter);
     }
 
     // Favorites filter
     if (favoritesOnly) {
-      filtered = filtered.filter(item => item.favorited);
+      filtered = filtered.filter((item: ContentItem) => item && item.favorited);
     }
 
     // Sort
@@ -380,10 +423,7 @@ const AIContentLibrary: React.FC = () => {
     // Lazy loading simulation
     if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 1000) {
       try {
-        const nextContent = await apiService.getContentLibrary({
-          page: currentPage + 1,
-          limit: 20
-        });
+        const nextContent = await apiService.getContentLibrary();
         setContent(prev => [...prev, ...nextContent]);
         setCurrentPage(prev => prev + 1);
       } catch (err) {
@@ -687,7 +727,7 @@ const AIContentLibrary: React.FC = () => {
         </div>
       )}
 
-      <style jsx>{`
+      <style>{`
         .ai-content-library {
           padding: 20px;
           max-width: 1200px;

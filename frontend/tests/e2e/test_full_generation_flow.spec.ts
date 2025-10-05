@@ -84,7 +84,7 @@ test.describe('T4C-001 Red Phase: Full Generation Flow E2E Tests', () => {
     await page.route('**/api/admin/generate/history**', async route => {
       if (route.request().method() === 'GET') {
         // If a generation was submitted, include it in history
-        let dynamicHistory = [...mockHistoryResponse];
+        const dynamicHistory = [...mockHistoryResponse];
         if (generationRequestData) {
           dynamicHistory.unshift({
             id: 'test-gen-new',

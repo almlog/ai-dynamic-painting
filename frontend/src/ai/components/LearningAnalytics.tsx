@@ -71,7 +71,7 @@ interface Recommendation {
 
 // Mock API service for testing
 const createMockApiService = () => ({
-  getLearningData: async (params?: any): Promise<LearningData> => {
+  getLearningData: async (_params?: any): Promise<LearningData> => {
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 100));
     
@@ -253,7 +253,7 @@ const createMockApiService = () => ({
     ];
   },
   
-  updatePreferences: async (preferences: Partial<UserPreferences>): Promise<{ success: boolean }> => {
+  updatePreferences: async (_preferences: Partial<UserPreferences>): Promise<{ success: boolean }> => {
     await new Promise(resolve => setTimeout(resolve, 100));
     return { success: true };
   },
@@ -760,7 +760,7 @@ const LearningAnalytics: React.FC = () => {
         </section>
       )}
 
-      <style jsx>{`
+      <style>{`
         .learning-analytics-dashboard {
           padding: 20px;
           max-width: 1200px;

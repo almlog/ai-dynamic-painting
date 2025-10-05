@@ -76,15 +76,17 @@ export interface UserSettings {
 
 // 使用統計型
 export interface UsageStats {
-  monthly_limit: number;
-  monthly_used: number;
-  daily_limit: number;
-  daily_used: number;
-  total_videos: number;
-  total_uploaded: number;
-  total_generated: number;
-  storage_used_gb: number;
-  storage_total_gb: number;
+  monthly_limit?: number;    // オプションに変更
+  monthly_used?: number;     // オプションに変更
+  daily_limit?: number;      // オプションに変更
+  daily_used?: number;       // オプションに変更
+  total_videos: number;      // 必須のまま（Dashboard.tsxで提供されているため）
+  total_uploaded?: number;   // オプションに変更
+  total_generated?: number;  // オプションに変更
+  storage_used_gb?: number;  // オプションに変更
+  storage_total_gb?: number; // オプションに変更
+  total_size?: number;
+  avg_duration?: number;
 }
 
 // システムログ型
@@ -123,10 +125,12 @@ export interface DeviceInfo {
 
 // フィルターオプション型
 export interface FilterOptions {
-  categories: string[];
-  timeOfDay: string[];
-  weather: string[];
-  tags: string[];
+  categories?: string[]; // オプションに変更
+  timeOfDay?: string[];  // オプションに変更
+  weather?: string[];    // オプションに変更
+  tags?: string[];       // オプションに変更
+  sortBy?: string;
+  filterBy?: string;
 }
 
 // API Response型
@@ -151,6 +155,7 @@ export interface VideoListProps {
   onVideoSelect: (video: Video) => void;
   onVideoUpload: () => void;
   onVideoDelete: (videoId: string) => void;
+  currentVideo?: Video | null; // Made optional
 }
 
 export interface VideoUploadProps {
@@ -164,4 +169,22 @@ export interface SettingsProps {
   settings: UserSettings;
   onSettingsChange: (settings: UserSettings) => void;
   onApiTest: (service: 'veo' | 'weather') => Promise<boolean>;
+}
+
+// Display関連の型定義
+export interface DisplayStatus {
+  mode: 'video' | 'image' | 'idle';
+  current_content_id: string | null;
+  brightness: number;
+  overlay_enabled: boolean;
+  fullscreen: boolean;
+  last_updated: string;
+}
+
+export interface DisplayControllerProps {
+  status: DisplayStatus;
+  onModeChange: (mode: 'video' | 'image' | 'idle') => void;
+  onBrightnessChange: (brightness: number) => void;
+  onOverlayToggle: () => void;
+  onFullscreenToggle: () => void;
 }

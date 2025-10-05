@@ -1,0 +1,14 @@
+node_modules
+dist
+coverage
+*.log
+*.md
+public
+.next
+.nuxt
+.cache
+.vscode
+.idea
+*.json
+package-lock.json
+yarn.lock

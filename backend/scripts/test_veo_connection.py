@@ -119,19 +119,23 @@ def verify_veo_connection(project_id: str, location: str) -> bool:
         print("\n🔄 Attempting to list available models...")
         
         try:
-            # List models with filter for image/video generation models
-            models = aiplatform.Model.list(
-                filter='display_name:"imagen" OR display_name:"veo"',
-                order_by="create_time desc",
-                limit=5
-            )
+            # Simple model listing test (no complex filters)
+            models = aiplatform.Model.list()
             
-            if models:
-                print(f"✅ Found {len(models)} image/video generation models:")
-                for model in models:
+            print(f"✅ Successfully connected! Found {len(models)} total models in project")
+            
+            # Look for VEO/Imagen models specifically
+            veo_models = []
+            for model in models[:10]:  # Check first 10 models
+                if any(keyword in model.display_name.lower() for keyword in ['imagen', 'veo', 'video', 'image']):
+                    veo_models.append(model)
+            
+            if veo_models:
+                print(f"✅ Found {len(veo_models)} image/video generation models:")
+                for model in veo_models:
                     print(f"   - {model.display_name} (ID: {model.name})")
             else:
-                print("ℹ️  No Imagen/VEO models found (this is normal for new projects)")
+                print("ℹ️  No VEO/Imagen models found (this is normal for new projects)")
                 
         except exceptions.PermissionDenied as e:
             print(f"⚠️  Permission denied when listing models: {e}")
@@ -158,25 +162,20 @@ def verify_veo_connection(project_id: str, location: str) -> bool:
         print("   Authentication is working correctly")
         return True
         
-    except exceptions.DefaultCredentialsError as e:
-        print(f"\n❌ Authentication error: {e}")
-        print("\n📝 To fix this, choose one of:")
-        print("   1. Set up service account:")
-        print("      export GOOGLE_APPLICATION_CREDENTIALS=/path/to/service-account-key.json")
-        print("   2. Use gcloud auth:")
-        print("      gcloud auth application-default login")
-        return False
-        
-    except exceptions.GoogleAPIError as e:
-        print(f"\n❌ Google API error: {e}")
-        print("   Check that the project ID and location are correct")
-        return False
-        
     except Exception as e:
-        print(f"\n❌ Unexpected error: {e}")
-        import traceback
-        traceback.print_exc()
-        return False
+        if "DefaultCredentialsError" in str(type(e)):
+            print(f"\n❌ Authentication error: {e}")
+            print("\n📝 To fix this, choose one of:")
+            print("   1. Set up service account:")
+            print("      export GOOGLE_APPLICATION_CREDENTIALS=/path/to/service-account-key.json")
+            print("   2. Use gcloud auth:")
+            print("      gcloud auth application-default login")
+            return False
+        else:
+            print(f"\n❌ Unexpected error: {e}")
+            import traceback
+            traceback.print_exc()
+            return False
 
 def check_veo_api_availability(project_id: str) -> Dict[str, bool]:
     """

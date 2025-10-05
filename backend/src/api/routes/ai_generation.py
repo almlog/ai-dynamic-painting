@@ -9,7 +9,7 @@ import asyncio
 import json
 
 # Import AI services
-from src.ai.services.veo_client import VEOGenerationService, VEOValidationError, VEOQuotaExceededError, VEOTimeoutError
+from src.ai.services.veo_client import EnhancedVEOClient, VEOValidationError, VEOQuotaExceededError, VEOTimeoutError
 from src.ai.services.prompt_generation_service import PromptGenerationService
 from src.ai.services.context_aware_service import ContextAwareService
 from src.ai.services.scheduling_service import SchedulingService, Priority
@@ -25,7 +25,7 @@ logger = logging.getLogger("ai_generation_api")
 router = APIRouter(prefix="/ai", tags=["AI Generation"])
 
 # Service instances (will be initialized during startup)
-veo_service: Optional[VEOGenerationService] = None
+veo_service: Optional[EnhancedVEOClient] = None
 prompt_service: Optional[PromptGenerationService] = None
 context_service: Optional[ContextAwareService] = None
 scheduling_service: Optional[SchedulingService] = None
@@ -34,21 +34,85 @@ monitoring_service: Optional[MonitoringService] = None
 
 
 class GenerateVideoRequest(BaseModel):
-    """Request model for video generation."""
-    prompt: str = Field(..., min_length=1, max_length=1000, description="Video generation prompt")
-    duration_seconds: int = Field(30, ge=5, le=60, description="Video duration in seconds")
-    resolution: str = Field("1920x1080", pattern="^(1920x1080|1280x720|854x480)$", description="Video resolution")
-    fps: int = Field(30, ge=24, le=60, description="Frames per second")
-    quality: str = Field("high", pattern="^(draft|standard|high)$", description="Generation quality")
-    style: Optional[str] = Field(None, max_length=100, description="Visual style preference")
-    use_context: bool = Field(True, description="Use environmental context for prompt enhancement")
-    priority: str = Field("normal", pattern="^(low|normal|high|urgent)$", description="Generation priority")
+    """
+    **VEO動画生成リクエスト**
+    
+    Google VEO APIを使用した高品質動画生成のためのリクエストモデル。
+    テキストプロンプトから720p〜4K品質の動画を5-30秒で生成できます。
+    """
+    
+    prompt: str = Field(
+        ..., 
+        min_length=1, 
+        max_length=2000, 
+        description="動画生成プロンプト (1-2000文字): 生成したい動画の内容を詳細に記述"
+    )
+    
+    duration_seconds: int = Field(
+        8, 
+        ge=5, 
+        le=30, 
+        description="動画の長さ (5-30秒): 短いほど低コスト、長いほど高コスト"
+    )
+    
+    resolution: str = Field(
+        "1080p", 
+        pattern="^(720p|1080p|4K)$", 
+        description="解像度: 720p(低コスト/テスト用), 1080p(推奨/標準), 4K(高品質/展示用)"
+    )
+    
+    fps: int = Field(
+        30, 
+        ge=24, 
+        le=60, 
+        description="フレームレート: 24fps(映画的), 30fps(標準), 60fps(超滑らか)"
+    )
+    
+    quality: str = Field(
+        "standard", 
+        pattern="^(standard|high|premium)$", 
+        description="品質レベル: standard(標準), high(高品質/推奨), premium(最高品質/展示用)"
+    )
+    
+    style: Optional[str] = Field(
+        None, 
+        max_length=100, 
+        description="視覚スタイル指定 (例: cinematic, anime, photographic, abstract)"
+    )
+    
+    use_context: bool = Field(
+        True, 
+        description="環境センサーデータを使用したプロンプト自動強化 (M5STACK連携)"
+    )
+    
+    priority: str = Field(
+        "normal", 
+        pattern="^(low|normal|high|urgent)$", 
+        description="生成優先度: low, normal(推奨), high, urgent"
+    )
     
     @validator('resolution')
     def validate_resolution(cls, v):
-        valid_resolutions = ["1920x1080", "1280x720", "854x480"]
-        if v not in valid_resolutions:
-            raise ValueError(f"Resolution must be one of: {valid_resolutions}")
+        # Convert user-friendly format to internal format for compatibility
+        resolution_mapping = {
+            "720p": "1280x720",
+            "1080p": "1920x1080", 
+            "4K": "3840x2160"
+        }
+        
+        if v in resolution_mapping:
+            return resolution_mapping[v]
+        elif v in resolution_mapping.values():
+            return v
+        else:
+            raise ValueError(f"Resolution must be one of: {list(resolution_mapping.keys())}")
+    
+    @validator('quality')
+    def validate_quality(cls, v):
+        # Ensure quality values match VEO API expectations
+        valid_qualities = ["standard", "high", "premium"]
+        if v not in valid_qualities:
+            raise ValueError(f"Quality must be one of: {valid_qualities}")
         return v
 
 
@@ -116,13 +180,51 @@ async def get_services():
     }
 
 
-@router.post("/generate", response_model=GenerateVideoResponse)
+@router.post("/generate", 
+             response_model=GenerateVideoResponse,
+             summary="🎬 VEO動画生成",
+             description="""
+             **Google VEO APIを使用した高品質動画生成**
+             
+             テキストプロンプトから美術館レベルの動画を自動生成します。
+             
+             **主な機能:**
+             - 📝 **多言語対応**: 日本語・英語プロンプト対応
+             - 🎥 **柔軟な品質設定**: 720p〜4K、5〜30秒、24〜60fps
+             - 💰 **コスト計算**: リアルタイム料金見積もり
+             - 🔧 **IoT連携**: M5STACKセンサーデータでプロンプト自動強化
+             - ⏱️ **非同期処理**: バックグラウンド生成、進捗追跡可能
+             
+             **処理フロー:**
+             1. プロンプト受信・バリデーション
+             2. 環境センサーデータでプロンプト強化 (オプション)
+             3. VEO APIで動画生成開始
+             4. タスクID返却 (進捗は /generation/{task_id} で確認)
+             5. 生成完了後、動画URL提供
+             
+             **コスト見積もり例:**
+             - 720p/8秒/standard: 約$0.20
+             - 1080p/15秒/high: 約$1.25  
+             - 4K/30秒/premium: 約$25.60
+             """,
+             responses={
+                 200: {"description": "生成タスク開始成功", "model": GenerateVideoResponse},
+                 400: {"description": "リクエストパラメータエラー"},
+                 429: {"description": "API制限到達 (1分間10回、1時間100回)"},
+                 503: {"description": "AIサービス初期化未完了"},
+                 507: {"description": "予算制限到達"}
+             })
 async def generate_video(
     request: GenerateVideoRequest,
     background_tasks: BackgroundTasks,
     services: Dict[str, Any] = Depends(get_services)
 ):
-    """Generate a video using AI with optional context enhancement."""
+    """
+    **VEO動画生成エンドポイント**
+    
+    Google VEO APIを使用してテキストプロンプトから高品質動画を生成します。
+    非同期処理により、生成中も他の操作が可能です。
+    """
     
     try:
         logger.info(f"Video generation request: {request.prompt[:100]}...")
@@ -1886,7 +1988,7 @@ async def initialize_ai_services():
         logger.info("Initializing AI services...")
         
         # Initialize services
-        veo_service = VEOGenerationService()
+        veo_service = EnhancedVEOClient()
         prompt_service = PromptGenerationService()
         context_service = ContextAwareService()
         scheduling_service = SchedulingService()

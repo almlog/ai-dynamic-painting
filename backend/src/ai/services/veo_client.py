@@ -102,7 +102,8 @@ class EnhancedVEOClient:
                 location=self.location,
                 credentials=self.get_credentials()
             )
-            self.model = aiplatform.GenerativeModel(self.model_name)
+            # Skip GenerativeModel initialization for VEO video generation
+            self.model = None  # aiplatform.GenerativeModel(self.model_name)
         
         logger.info(f"EnhancedVEOClient initialized with project: {self.project_id}, location: {self.location}")
     

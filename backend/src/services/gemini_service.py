@@ -100,6 +100,93 @@ class GeminiService:
             logger.error(f"An error occurred during image generation: {e}")
             return None
 
+    def generate_video(self, prompt: str, duration_seconds: int = 3, resolution: str = "720p", fps: int = 24, format: str = "mp4", loop_mode: bool = True) -> Optional[bytes]:
+        """
+        Generates a video from a text prompt using Google Cloud's VEO API.
+        Creates loop videos where the first frame equals the last frame for seamless playback.
+        
+        Args:
+            prompt: The text prompt to guide video generation.
+            duration_seconds: The duration of the video in seconds (3-5 recommended for cost).
+            resolution: The resolution of the video (e.g., "720p", "1080p").
+            fps: Frames per second (24 or 30).
+            format: Output video format ("mp4" or "webm").
+            loop_mode: Whether to create a seamless loop video (first frame = last frame).
+        
+        Returns:
+            The video data as bytes if successful, otherwise None.
+        """
+        logger.info(f"Starting video generation with prompt: {prompt[:80]}...")
+        logger.info(f"Parameters: duration={duration_seconds}s, resolution={resolution}, fps={fps}, loop={loop_mode}")
+        
+        try:
+            client_options = {"api_endpoint": f"{self.location}-aiplatform.googleapis.com"}
+            prediction_service_client = aiplatform.gapic.PredictionServiceClient(
+                client_options=client_options
+            )
+
+            # Use the correct VEO video generation endpoint
+            endpoint = f"projects/{self.project_id}/locations/{self.location}/publishers/google/models/veo-001-preview"
+            
+            # Prepare the instance with video-specific prompt
+            video_prompt = prompt
+            if loop_mode:
+                # Enhance prompt for loop video generation
+                video_prompt = f"{prompt}. Create a seamless loop where the first and last frames are identical for infinite playback."
+            
+            instance = json_format.ParseDict({"prompt": video_prompt}, Value())
+            
+            # Build parameters for video generation
+            parameters_dict = {
+                "duration_seconds": duration_seconds,
+                "resolution": resolution,
+                "fps": fps,
+                "format": format,
+                "seamless_loop": loop_mode,  # VEO API parameter for loop videos
+                "quality": "high",  # High quality for art display
+                "style": "photorealistic"  # Photorealistic landscape style
+            }
+            
+            parameters = json_format.ParseDict(parameters_dict, Value())
+            
+            logger.info(f"Calling VEO API with endpoint: {endpoint}")
+            response = prediction_service_client.predict(
+                endpoint=endpoint, instances=[instance], parameters=parameters
+            )
+
+            if not response.predictions:
+                logger.error("Video generation API returned no predictions.")
+                return None
+
+            # Process video output (expected to be base64 encoded)
+            prediction_data = response.predictions[0]
+            
+            # Check if we got video data
+            if "bytesBase64Encoded" in prediction_data:
+                video_bytes = base64.b64decode(prediction_data["bytesBase64Encoded"])
+                logger.info(f"Successfully generated video, {len(video_bytes)} bytes.")
+                
+                # Verify it's actually a video by checking MIME type
+                if "mimeType" in prediction_data:
+                    mime_type = prediction_data["mimeType"]
+                    if not mime_type.startswith("video/"):
+                        logger.warning(f"Expected video MIME type, got: {mime_type}")
+                    else:
+                        logger.info(f"Video MIME type confirmed: {mime_type}")
+                
+                return video_bytes
+            else:
+                logger.error("No video data in API response.")
+                logger.debug(f"Response keys: {list(prediction_data.keys())}")
+                return None
+
+        except Exception as e:
+            logger.error(f"An error occurred during video generation: {e}")
+            # Log more details for debugging
+            import traceback
+            logger.debug(f"Traceback: {traceback.format_exc()}")
+            return None
+
     def generate_image_instructions(
         self, 
         prompt: str,

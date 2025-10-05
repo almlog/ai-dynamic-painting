@@ -101,45 +101,53 @@ AI動的絵画システムは、家庭のリビング空間を美術館のよう
 - **Database**: SQLite基本スキーマ ✅
 - **Architecture**: 拡張可能設計基盤 ✅
 
-## 🚀 クイックスタート
+## 🚀 起動方法（Gemini混乱防止版）
 
-### 🎉 開発環境起動（推奨）
+### ⚡ 超簡単起動（推奨）
 
+**たった1行で起動完了！**
 ```bash
-ai-dev
+/home/aipainting/ai-dynamic-painting/scripts/quick-start.sh
 ```
 
-このコマンド一つで以下が自動実行されます：
-- プロジェクトディレクトリに移動
-- 仮想環境をアクティベート
-- 重要ファイル（PERSONA.md、CLAUDE.md）を確認
-- Serena MCPの動作確認
-- 開発環境情報を表示
-- サービス起動オプション表示
+**完了**: 自動的に両サーバーが起動します！
 
-### 🚀 システム起動
-**10秒で完全起動**:
+### 📊 アクセス確認
+- **🎨 Frontend（メインUI）**: http://localhost:5173
+- **🔧 Backend API**: http://localhost:8000  
+- **📚 API仕様書**: http://localhost:8000/docs
+- **🎬 VEO動画生成**: http://localhost:8000/api/ai/health
+
+### 🔍 起動確認コマンド
 ```bash
-./scripts/quick-start.sh
+# すべて正常なら "healthy" が返る
+curl http://localhost:8000/health
+curl http://localhost:5173/
+curl http://localhost:8000/api/ai/health
 ```
 
-**手動起動**:
-```bash
-# Backend (FastAPI) 
-PYTHONPATH=/home/aipainting/ai-dynamic-painting/backend/src \
-GEMINI_API_KEY=test-api-key-development \
-VEO_PROJECT_ID=test-project-id \
-/home/aipainting/ai-dynamic-painting/.venv/bin/uvicorn src.main:app \
---reload --host 0.0.0.0 --port 8000 &
+---
 
-# Frontend (React)
-cd /home/aipainting/ai-dynamic-painting/frontend && npm run dev &
+## 🛠️ 手動起動（上級者向け）
+
+### 1. バックエンド起動
+```bash
+cd /home/aipainting/ai-dynamic-painting/backend
+source ../.venv/bin/activate
+PYTHONPATH=/home/aipainting/ai-dynamic-painting/backend/src python -m uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
-**アクセス URL**:
-- Backend API: http://localhost:8000
-- Swagger UI: http://localhost:8000/docs  
-- Frontend: http://localhost:5173
+### 2. フロントエンド起動（新しいターミナル）
+```bash
+cd /home/aipainting/ai-dynamic-painting/frontend
+npm run dev
+```
+
+---
+
+## 📋 詳細な起動ガイド
+
+**詳しい起動手順・トラブルシューティング**: [STARTUP_GUIDE.md](STARTUP_GUIDE.md)
 
 ### その他の便利コマンド
 
